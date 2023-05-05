@@ -1,12 +1,12 @@
-## Paper Title - Machine Learning instructions
+## Paper Title - Machine Learning Instructions
 
 ### Installation
 
-After clone the repository, all commands can be executed at the root level
+After cloning the repository, all commands can be executed at the root level.
 
-#### Using Virtual Enviroment to avoid global installation
+#### Using Virtual Environment to avoid global installation
 
-It is possible to ignore these commands, but the global package installation can lead your enviroment to unstable statuses (Tested at Ubuntu/Linux and Windows 11)
+It is possible to ignore these commands, but the global package installation can lead your environment to unstable statuses (Tested at Ubuntu/Linux and Windows 11)
 
 - `python -m venv envML`
 - `envML\Scripts\activate.ps1` (Windows-Powershell) or `source envML/bin/activate` (Bash-Linux)
@@ -15,5 +15,5 @@ It is possible to ignore these commands, but the global package installation can
 #### Install dependencies
 
 - `pip install -r requirements.txt`
-NOTE: The requirements file includes some development dependencies to execute Jupyter notebooks in a VSCode enviroment.
-- Go to the directory `ML/Notebooks/` and execute it to use the tool.
+NOTE: The requirements file includes some development dependencies to execute Jupyter notebooks in a VSCode environment.
+- Go to the `ML/Notebooks/` directory and execute it to use the tool.
