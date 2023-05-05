@@ -1,0 +1,8 @@
+create view predicted as
+
+select A.A.*,
+	   B.B.*,
+	   A.A join B.B  as relates_with,
+
+from 'http://a_model' as A,
+	 'http://b_model' as B,

@@ -1,0 +1,3 @@
+viewpoint=../src-gen/predicted.eviewpoint
+contributingModels=A::../../Modeling_Resources/models/Example/DatasetA.xmi,B::../../Modeling_Resources/models/Example/DatasetB.xmi
+weavingModel=predicted.xmi

@@ -1,0 +1,201 @@
+package org.atlanmod.erpaper.modeling.generators;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import org.atlanmod.emfviews.core.Viewpoint;
+import org.atlanmod.emfviews.core.ViewpointResource;
+import org.atlanmod.emfviews.virtuallinks.ConcreteConcept;
+import org.atlanmod.emfviews.virtuallinks.VirtualLinksFactory;
+import org.atlanmod.emfviews.virtuallinks.VirtualLinksPackage;
+import org.atlanmod.erpaper.modeling.utils.EmfViewsFactory;
+import org.atlanmod.erpaper.modeling.utils.ViewUtils;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+
+public class GenerateWeavingModel {
+	public static String here = new File(".").getAbsolutePath();
+
+	public static URI resourceURI(String relativePath) {
+		return URI.createFileURI(here + relativePath);
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		//Paths for Example View files
+		String predictedViewDirectory = "/../Views/Predicted_View/";
+		String parametersFile = predictedViewDirectory + "my_view/parameters.gnn";
+		String eViewFile = predictedViewDirectory + "my_view/predicted.eview";
+		String eViewPointFile = predictedViewDirectory + "src-gen/predicted.eviewpoint";
+		String viewpointWMFile = predictedViewDirectory + "src-gen/predicted.xmi";
+		String jsonPredictedFile = predictedViewDirectory + "for_predict/predictions.json";
+		
+		//Paths for modeling Resources
+		String modelingResourcesDirectory = "/../Modeling_Resources/metamodels/";
+		
+		// Create basic resources to deal with EMF reflective API
+		Map<String, Object> map = Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap();
+		map.put("xmi", new XMIResourceFactoryImpl());
+		map.put("*", new EcoreResourceFactoryImpl());
+		map.put("eviewpoint", new EmfViewsFactory());
+		map.put("eview", new EmfViewsFactory());
+		
+		
+		// Make sure the weaving model package is loaded
+		VirtualLinksPackage.eINSTANCE.eClass();
+
+		//global ResourceSet and baseRegistry
+		ResourceSet rSet = new ResourceSetImpl();
+		EPackage.Registry baseRegistry = rSet.getPackageRegistry();
+		
+		// Register metamodels
+		//TODO: How to get from global register?
+		EPackage aPkg = (EPackage) rSet.getResource(resourceURI(modelingResourcesDirectory + "A.ecore"), true).getContents().get(0);
+		EPackage.Registry.INSTANCE.put(aPkg.getNsURI(), aPkg);
+		EPackage bPkg = (EPackage) rSet.getResource(resourceURI(modelingResourcesDirectory + "B.ecore"), true).getContents().get(0);
+		EPackage.Registry.INSTANCE.put(bPkg.getNsURI(), bPkg);
+		
+		//Load Viewpoint and Viewpoint WeavingModel
+		ViewpointResource vResource = new ViewpointResource(resourceURI(eViewPointFile));
+		vResource.load(null);
+		Viewpoint viewpoint = vResource.getViewpoint();
+		
+		Resource viewpointWM = rSet.getResource(resourceURI(viewpointWMFile), true);
+		viewpointWM.load(null);
+		
+		//Get Contribution Packages
+		Map<String, EPackage> viewPointContribEPackages = viewpoint.getContributingEPackages();
+		
+		//Read .eview as properties since there is no weaving model
+		Properties propsEView = new Properties();
+		propsEView.load(new FileReader(here + eViewFile));
+		String contributingModels = propsEView.getProperty("contributingModels");
+		
+		String[] viewContribModelsString = contributingModels.split(",");
+		Map<String, String> viewContribModels = new HashMap<String, String>();
+		String[] aliasPathPairLeft = viewContribModelsString[0].split("::");
+		String classLeft = aliasPathPairLeft[0];
+		String modelLeft = aliasPathPairLeft[1].replace("../../", "/../");
+		
+		String[] aliasPathPairRight = viewContribModelsString[1].split("::");
+		String classRight = aliasPathPairRight[0];
+		String modelRight = aliasPathPairRight[1].replace("../../", "/../");
+
+		// Create a new instance of Utils class to work with View elements
+		// including a factory for the Virtual Links
+		VirtualLinksFactory vLinksFactory = VirtualLinksFactory.eINSTANCE;
+		ViewUtils viewUtils = new ViewUtils(vLinksFactory);
+
+		// Build view weaving model
+		viewUtils.createWeavingModel("predicted", true);//TODO: get whitelist from viewpoint
+		
+		//Set Contributing models in ViewLevel
+	    viewUtils.createContributingModels(viewPointContribEPackages);
+	    
+		
+		try {
+		    // create Gson instance
+		    Gson gson = new Gson();
+
+		    // create a reader
+		    Reader reader = Files.newBufferedReader(Paths.get(here + jsonPredictedFile));
+		    
+		    @SuppressWarnings("deprecation")
+			JsonParser parser = new JsonParser();
+		    @SuppressWarnings("deprecation")
+			JsonElement jsonElement = parser.parse(new FileReader(here + jsonPredictedFile));
+		    JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+		    for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+		        String key = entry.getKey();
+		        JsonElement value = entry.getValue();
+		        
+		        //create the concrete element class left
+		        EPackage contribModelLeft = viewPointContribEPackages.get(classLeft);
+		        String pathLeft = getPathFromModel(contribModelLeft.getNsURI(), modelLeft, classLeft, key);
+		        ConcreteConcept leftConcept = viewUtils.createConcreteConcept(contribModelLeft.getNsURI(), pathLeft);
+		        		        
+		        JsonArray jsonArray = value.getAsJsonArray();
+
+		        int count = 1;
+		        for (JsonElement elementRightID : jsonArray) {
+		        	//create the concrete element class right
+			        EPackage contribModelRight = viewPointContribEPackages.get(classRight);
+			        String pathRight = getPathFromModel(contribModelRight.getNsURI(), modelRight, classRight, elementRightID.toString());
+			        ConcreteConcept rightConcept = viewUtils.createConcreteConcept(contribModelRight.getNsURI(), pathRight);
+			        
+			        viewUtils.createVirtualAssociation("relates_with", leftConcept, rightConcept, -1);
+			        count++;
+			        
+			        if (count == 3) {
+			        	break;
+			        }
+		        }
+		    }
+
+		    // close reader
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}		
+		
+		EObject viewWM = (EObject) viewUtils.getWeavingModel();
+		Resource serializedViewWM = null;
+		URI uriSerializedViewWM;
+		uriSerializedViewWM = resourceURI(predictedViewDirectory + "my_view/predicted.xmi");
+		serializedViewWM = rSet.createResource(uriSerializedViewWM);
+		serializedViewWM.getContents().add(viewWM);
+		// serialize
+		try {
+			serializedViewWM.save(null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String getPathFromModel(String nsURi, String modelLeft, String classLeft, String valueToSearch) throws IOException {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		Resource myModel = resourceSet.getResource(resourceURI(modelLeft), true);
+
+		myModel.load(null);
+		
+		for (Iterator<EObject> i = (Iterator<EObject>) myModel.getAllContents(); i.hasNext();) {
+		    EObject object = i.next();
+
+		    // Check if the object has the attribute you are looking for and if its value is equal to the specified value
+		    //TODO: Replace ID by the attribute selected by the user
+		    EAttribute attribute = (EAttribute) object.eClass().getEStructuralFeature("ID");
+		    if (attribute != null && object.eGet(attribute).toString().equals(valueToSearch)) {
+		        // You have found the object you were looking for
+		    	return myModel.getURIFragment(object);
+		    }
+		}
+		
+		return null;
+	}
+}
