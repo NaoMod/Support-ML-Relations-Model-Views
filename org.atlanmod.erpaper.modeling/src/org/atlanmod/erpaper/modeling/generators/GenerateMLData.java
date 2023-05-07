@@ -35,6 +35,11 @@ public class GenerateMLData {
 		return URI.createFileURI(here + relativePath);
 	}
 
+	/**
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		
 		String DIRECTORY = "AB";		
@@ -133,6 +138,14 @@ public class GenerateMLData {
 		}
 	}
 
+	/**
+	 * Create the JSON parameters file used in the Machine Learning scripts
+	 * 
+	 * @param jsonPath Path for the generated file
+	 * @param props    Original properties created by the user with ML information
+	 * 
+	 * @throws IOException
+	 */
 	private static void createJsonParams(String jsonPath, Properties props) throws IOException {
 		Gson gsonObj = new Gson();
 		String strJson =  gsonObj.toJson(props);
@@ -146,6 +159,15 @@ public class GenerateMLData {
 		
 	}
 
+	/**
+	 * Create the skeleton of the CSV file with mandatory fields
+	 * 
+	 * @param csvPath     Path for the generated file
+	 * @param LeftIdName  Name of the identifier of left model in the relation (source)
+	 * @param RightIdName Name of the identifier of right model in the relation (target)
+	 * 
+	 * @throws IOException
+	 */
 	private static void createCSVSkeleton(String csvPath, String LeftIdName, String RightIdName) throws IOException {
 		boolean fileExists = new File(csvPath).exists();
         FileWriter csvWriter = new FileWriter(csvPath, true);
@@ -160,6 +182,14 @@ public class GenerateMLData {
         csvWriter.close();
 	}
 
+	/**
+	 * 
+	 * @param modelFrom
+	 * @param modelTo
+	 * @param ePackageTo
+	 * @param className
+	 * @return
+	 */
 	public static Resource copyModel(Resource modelFrom, Resource modelTo, EPackage ePackageTo, String className) {
 		//TODO: Include parameter to exclude attributes
 		List<EObject> elementsFrom = modelFrom.getContents();

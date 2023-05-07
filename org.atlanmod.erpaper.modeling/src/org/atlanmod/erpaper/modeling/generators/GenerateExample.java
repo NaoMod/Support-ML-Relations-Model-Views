@@ -35,9 +35,9 @@ public class GenerateExample {
 	 * 
 	 * 
 	 * @param directory Name of the directory where the serialized models will be stored as xmi files
-	 * @param IDs Set of IDs to be used as identifiers of the elements
-	 * @param numbers Set of numbers to be selected as elements numerical attributes
-	 * @param strings Set of strings to be selected as elements string attributes
+	 * @param IDs       Set of IDs to be used as identifiers of the elements
+	 * @param numbers   Set of numbers to be selected as elements numerical attributes
+	 * @param strings   Set of strings to be selected as elements string attributes
 	 * 
 	 * @throws IOException
 	 */
@@ -148,6 +148,11 @@ public class GenerateExample {
 		}
 	}
 
+	/***
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		// Create basic resources to deal with EMF reflective API
 		Map<String, Object> map = Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap();
