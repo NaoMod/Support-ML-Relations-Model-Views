@@ -37,14 +37,17 @@ public class GenerateMLData {
 
 	public static void main(String[] args) throws Exception {
 		
-		//Paths for Example View files
-		String predictedViewDirectory = "/../Views/Predicted_View/";
-		String parametersFile = predictedViewDirectory + "my_view/parameters.gnn";
-		String eViewFile = predictedViewDirectory + "my_view/predicted.eview";
-		String eViewPointFile = predictedViewDirectory + "src-gen/predicted.eviewpoint";
-		String viewpointWMFile = predictedViewDirectory + "src-gen/predicted.xmi";
+		String DIRECTORY = "AB";		
 		
-		//Paths for modeling Resources
+		//Paths for Example View files
+		String recommendedViewDirectory = "/../Views/Recommended_View/";
+		
+		String parametersFile = recommendedViewDirectory + "my_view/recommended.gnn";
+		String eViewFile = recommendedViewDirectory + "my_view/recommended.eview";
+		String eViewPointFile = recommendedViewDirectory + "src-gen/recommended.eviewpoint";
+		String viewpointWMFile = recommendedViewDirectory + "src-gen/recommended.xmi";
+		
+		//Paths for modeling Resources with the metamodels
 		String modelingResourcesDirectory = "/../Modeling_Resources/metamodels/";
 		
 		// Create basic resources to deal with EMF reflective API
@@ -62,7 +65,6 @@ public class GenerateMLData {
 		ResourceSet rSet = new ResourceSetImpl();
 		
 		// Register metamodels
-		//TODO: How to get from global register?
 		EPackage aPkg = (EPackage) rSet.getResource(resourceURI(modelingResourcesDirectory + "A.ecore"), true).getContents().get(0);
 		EPackage.Registry.INSTANCE.put(aPkg.getNsURI(), aPkg);
 		EPackage bPkg = (EPackage) rSet.getResource(resourceURI(modelingResourcesDirectory + "B.ecore"), true).getContents().get(0);
@@ -96,14 +98,14 @@ public class GenerateMLData {
 		Properties props = new Properties();
 		props.load(new FileReader(here + parametersFile));
 		
-		URI uriLeft = resourceURI(predictedViewDirectory + "/for_predict/DatasetLeft.xmi");
+		URI uriLeft = resourceURI("/../Data/" + DIRECTORY + "/DatasetLeft.xmi");
 		Resource modelLeft = rSet.createResource(uriLeft);
 		EPackage ePackageLeft = EPackage.Registry.INSTANCE.getEPackage(viewPointContribEPackages.get(classLeft).getNsURI());
-		URI uriRight = resourceURI(predictedViewDirectory + "/for_predict/DatasetRight.xmi");
+		URI uriRight = resourceURI("/../Data/" + DIRECTORY + "/DatasetRight.xmi");
 		EPackage ePackageRight = EPackage.Registry.INSTANCE.getEPackage(viewPointContribEPackages.get(classRight).getNsURI());
 		Resource modelRight = rSet.createResource(uriRight);
 
-		// TODO: Encapsulate in a for loop when have more models (how to deal with IDs?)
+		// TODO: Encapsulate in a for loop when have more models
 		URI uriTrainingLeft = resourceURI(modelTrainingLeft);
 		Resource modelForTrainingLeft = rSet.getResource(uriTrainingLeft, true);
 		URI uriTrainingRight = resourceURI(modelTrainingRight);
@@ -112,11 +114,11 @@ public class GenerateMLData {
 		copyModel(modelForTrainingLeft, modelLeft, ePackageLeft, classLeft);
 		copyModel(modelForTrainingRight, modelRight, ePackageRight, classRight);
 		
-		String csvPath = here + predictedViewDirectory + "/for_predict/Relations.csv";
+		String csvPath = here + "/../Data/" + DIRECTORY + "/Relations.csv";
 		
 		createCSVSkeleton(csvPath, "Left_id", "Right_id");
 		
-		String jsonPath = here + predictedViewDirectory + "/for_predict/Parameters.json";
+		String jsonPath = here + "/../Data/" + DIRECTORY + "/Parameters.json";
 		
 		props.put("CLASS_LEFT", classLeft);
 		props.put("CLASS_RIGHT", classRight);
