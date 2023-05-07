@@ -15,7 +15,12 @@ The tool aims to automatically recommend links in Model Views by training a GNN 
 - It is necessary to have a working instance of Eclipse Modeling Workbench with the EMF Views plugin installed.
 - Python >= 3.8 (refer to the ML directory for detailed instructions)
 
-### How to execute the step-by-step
+### How to generate the necessary files for execution
+
+1. Using the Eclipse instance, run the Java Program `GenerateExample` in the `org.atlanmod.erpaper.modeling` project to get the example files used in the steps decribed below
+    - Into `Modeling_Resources/models`, the program will create 2 .xmi files with the serialized models and a CSV with the defined relations.
+ 
+### How to execute step-by-step
 
 1. Create the VPDL file defining the metamodels, but without the where clause
     - Important to point out the classes that participate in the relation and the relation name

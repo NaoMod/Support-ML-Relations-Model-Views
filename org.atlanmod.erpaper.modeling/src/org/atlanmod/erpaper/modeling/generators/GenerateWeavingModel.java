@@ -3,10 +3,6 @@ package org.atlanmod.erpaper.modeling.generators;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -20,22 +16,19 @@ import org.atlanmod.erpaper.modeling.utils.EmfViewsFactory;
 import org.atlanmod.erpaper.modeling.utils.ViewUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonArray;
+import com.google.gson.stream.JsonReader;
 
 public class GenerateWeavingModel {
 	public static String here = new File(".").getAbsolutePath();
@@ -48,7 +41,7 @@ public class GenerateWeavingModel {
 
 		//Paths for Example View files
 		String predictedViewDirectory = "/../Views/Predicted_View/";
-		String parametersFile = predictedViewDirectory + "my_view/parameters.gnn";
+		//String parametersFile = predictedViewDirectory + "my_view/parameters.gnn";
 		String eViewFile = predictedViewDirectory + "my_view/predicted.eview";
 		String eViewPointFile = predictedViewDirectory + "src-gen/predicted.eviewpoint";
 		String viewpointWMFile = predictedViewDirectory + "src-gen/predicted.xmi";
@@ -70,7 +63,6 @@ public class GenerateWeavingModel {
 
 		//global ResourceSet and baseRegistry
 		ResourceSet rSet = new ResourceSetImpl();
-		EPackage.Registry baseRegistry = rSet.getPackageRegistry();
 		
 		// Register metamodels
 		//TODO: How to get from global register?
@@ -96,7 +88,6 @@ public class GenerateWeavingModel {
 		String contributingModels = propsEView.getProperty("contributingModels");
 		
 		String[] viewContribModelsString = contributingModels.split(",");
-		Map<String, String> viewContribModels = new HashMap<String, String>();
 		String[] aliasPathPairLeft = viewContribModelsString[0].split("::");
 		String classLeft = aliasPathPairLeft[0];
 		String modelLeft = aliasPathPairLeft[1].replace("../../", "/../");
@@ -118,16 +109,9 @@ public class GenerateWeavingModel {
 	    
 		
 		try {
-		    // create Gson instance
-		    Gson gson = new Gson();
-
-		    // create a reader
-		    Reader reader = Files.newBufferedReader(Paths.get(here + jsonPredictedFile));
 		    
-		    @SuppressWarnings("deprecation")
-			JsonParser parser = new JsonParser();
-		    @SuppressWarnings("deprecation")
-			JsonElement jsonElement = parser.parse(new FileReader(here + jsonPredictedFile));
+			JsonReader readerJson = new JsonReader(new FileReader(here + jsonPredictedFile));
+			JsonElement jsonElement = JsonParser.parseReader(readerJson);
 		    JsonObject jsonObject = jsonElement.getAsJsonObject();
 
 		    for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -156,9 +140,6 @@ public class GenerateWeavingModel {
 			        }
 		        }
 		    }
-
-		    // close reader
-		    reader.close();
 
 		} catch (Exception ex) {
 		    ex.printStackTrace();

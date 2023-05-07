@@ -1,11 +1,7 @@
 package org.atlanmod.erpaper.modeling.utils;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.atlanmod.emfviews.virtuallinks.ConcreteConcept;
 import org.atlanmod.emfviews.virtuallinks.ConcreteElement;
@@ -14,7 +10,6 @@ import org.atlanmod.emfviews.virtuallinks.Filter;
 import org.atlanmod.emfviews.virtuallinks.VirtualAssociation;
 import org.atlanmod.emfviews.virtuallinks.VirtualLinksFactory;
 import org.atlanmod.emfviews.virtuallinks.WeavingModel;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EPackage;
 
 public class ViewUtils {
@@ -190,7 +185,7 @@ public class ViewUtils {
 
 	public void createContributingModels(Map<String, EPackage> viewpointContirbutingModelsURIs) {
 		for (Map.Entry<String, EPackage> entry : viewpointContirbutingModelsURIs.entrySet()) {
-			String alias = entry.getKey();
+			
 			EPackage ePackage = entry.getValue();
 			ContributingModel cm = vLinksFactory.createContributingModel();
 			weavingModel.getContributingModels().add(cm);
