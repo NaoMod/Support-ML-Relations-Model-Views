@@ -155,8 +155,7 @@ public class GenerateMLData {
 		jsonWriter.append(strJson);		
 		
 		jsonWriter.flush();
-		jsonWriter.close();
-		
+		jsonWriter.close();		
 	}
 
 	/**
@@ -191,7 +190,6 @@ public class GenerateMLData {
 	 * @return
 	 */
 	public static Resource copyModel(Resource modelFrom, Resource modelTo, EPackage ePackageTo, String className) {
-		//TODO: Include parameter to exclude attributes
 		List<EObject> elementsFrom = modelFrom.getContents();
 		
 		for (Iterator<EObject> iter = elementsFrom.iterator(); iter.hasNext();) {

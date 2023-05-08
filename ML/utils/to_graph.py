@@ -9,11 +9,11 @@ from utils.encoders import IdentityEncoder, SequenceEncoder
 
 class Func():
 
-    def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_to_encode_left = None, features_to_encode_right = None, unique_id_left= None, unique_id_right = None):
+    def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_to_ignore_left = None, features_to_ignore_right = None, unique_id_left= None, unique_id_right = None):
         
         self.sentence_encoding_name = sentence_encoding_name
-        self.features_to_encode_left = features_to_encode_left
-        self.features_to_encode_right = features_to_encode_right
+        self.features_to_ignore_left = features_to_ignore_left
+        self.features_to_ignore_right = features_to_ignore_right
         self.unique_id_left = unique_id_left
         self.unique_id_right = unique_id_right
 
@@ -50,9 +50,6 @@ class Func():
                 
         df_left = pd.DataFrame(Left_wrapper)
         df_right = pd.DataFrame(Right_wrapper)
-
-        print(df_left.head())
-        print(df_right.head())
         
         df_rels = pd.read_csv(relations_csv_path)
         left_id, right_id = df_rels.columns.values
@@ -75,11 +72,11 @@ class Func():
         class_right = parameters['CLASS_RIGHT']
         relation_name = parameters['RELATION_NAME']
 
-        data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_to_encode_left)
+        data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_to_ignore_left)
         data[class_left].num_nodes = len(left_mapping)
         data[class_left].node_id = torch.Tensor(list(left_mapping.values())).long()
 
-        data[class_right].x, right_mapping = self._load_nodes(df_right, self.features_to_encode_right)
+        data[class_right].x, right_mapping = self._load_nodes(df_right, self.features_to_ignore_right)
         data[class_right].num_nodes = len(right_mapping)
         data[class_right].node_id = torch.Tensor(list(right_mapping.values())).long()
 
@@ -101,7 +98,7 @@ class Func():
 
         return data, left_mapping, right_mapping
 
-    def _load_nodes(self, df, features_to_encode) -> Tuple[torch.Tensor, dict]:
+    def _load_nodes(self, df, features_to_ignore) -> Tuple[torch.Tensor, dict]:
         """
         Load the node features
 
@@ -109,21 +106,21 @@ class Func():
         ---------- 
         df: DataFrame
             Dataframe that contains nodes information to be encoded.
-        features_to_encode: lst
-            List of features to be encoded.
+        features_to_ignore: lst
+            List of features to be inored during encoding.
 
         Returns
         -------
         node_features: Tensor
             node features for the graph
         mapping: dict
-            mapping of the node index (Mandatory for the edge index)
+            mapping of the node index (Used to create the edge index)
         """
 
         encoders = {}
         
         for column_name, _ in df.items():
-            if features_to_encode is None or column_name in features_to_encode:
+            if features_to_ignore is None or column_name not in features_to_ignore:
                 # Define the encoders for each column
                 if df[column_name].dtype.kind in 'biufc':
                     # biufc means "numeric" columns. bool, int, uint, float, complex
