@@ -18,7 +18,7 @@ class Func():
         self.unique_id_right = unique_id_right
 
 
-    def xmi_to_graph(self, model_root_left, model_root_right, relations_csv_path, json_parameters_path):
+    def xmi_to_graph(self, model_root_left, model_root_right, relations_csv_path, class_left, class_right, relation_name):
         data = HeteroData()
 
         Left_wrapper = {}
@@ -63,14 +63,6 @@ class Func():
 
         df_left = df_left.set_index(left_index, drop=False)
         df_right = df_right.set_index(right_index, drop=False)
-
-        # Read JSON to get extra parameters in the graph
-        with open(json_parameters_path) as json_data:
-            parameters = json.load(json_data)
-        
-        class_left = parameters['CLASS_LEFT']
-        class_right = parameters['CLASS_RIGHT']
-        relation_name = parameters['RELATION_NAME']
 
         data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_to_ignore_left)
         data[class_left].num_nodes = len(left_mapping)

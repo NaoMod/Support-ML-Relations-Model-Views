@@ -40,12 +40,11 @@ public class GenerateWeavingModel {
 	public static void main(String[] args) throws Exception {
 
 		//Paths for Example View files
-		String predictedViewDirectory = "/../Views/Predicted_View/";
-		//String parametersFile = predictedViewDirectory + "my_view/parameters.gnn";
-		String eViewFile = predictedViewDirectory + "my_view/predicted.eview";
-		String eViewPointFile = predictedViewDirectory + "src-gen/predicted.eviewpoint";
-		String viewpointWMFile = predictedViewDirectory + "src-gen/predicted.xmi";
-		String jsonPredictedFile = predictedViewDirectory + "for_predict/predictions.json";
+		String predictedViewDirectory = "/../Views/Recommended_View/";
+		String eViewFile = predictedViewDirectory + "my_view/recommended.eview";
+		String eViewPointFile = predictedViewDirectory + "src-gen/recommended.eviewpoint";
+		String viewpointWMFile = predictedViewDirectory + "src-gen/recommended.xmi";
+		String jsonPredictedFile = predictedViewDirectory + "for_recommendation/recommendations.json";
 		
 		//Paths for modeling Resources
 		String modelingResourcesDirectory = "/../Modeling_Resources/metamodels/";
@@ -102,7 +101,7 @@ public class GenerateWeavingModel {
 		ViewUtils viewUtils = new ViewUtils(vLinksFactory);
 
 		// Build view weaving model
-		viewUtils.createWeavingModel("predicted", true);//TODO: get whitelist from viewpoint
+		viewUtils.createWeavingModel("recommended", true);//TODO: get whitelist from viewpoint
 		
 		//Set Contributing models in ViewLevel
 	    viewUtils.createContributingModels(viewPointContribEPackages);
@@ -148,7 +147,7 @@ public class GenerateWeavingModel {
 		EObject viewWM = (EObject) viewUtils.getWeavingModel();
 		Resource serializedViewWM = null;
 		URI uriSerializedViewWM;
-		uriSerializedViewWM = resourceURI(predictedViewDirectory + "my_view/predicted.xmi");
+		uriSerializedViewWM = resourceURI(predictedViewDirectory + "my_view/recommended.xmi");
 		serializedViewWM = rSet.createResource(uriSerializedViewWM);
 		serializedViewWM.getContents().add(viewWM);
 		// serialize

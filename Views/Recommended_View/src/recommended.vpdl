@@ -2,7 +2,12 @@ create view recommended as
 
 select A.A.*,
 	   B.B.*,
-	   A.A join B.B  as relates_with,
+	   A.A join B.B  as relates_with
 
 from 'http://a_model' as A,
 	 'http://b_model' as B,
+	 
+where "IGNORE_ATTRIBUTES_LEFT=ID" for relates_with,
+		"IGNORE_ATTRIBUTES_RIGHT=ID" for relates_with,
+		"UNIQUE_ID_LEFT=ID" for relates_with,
+		"UNIQUE_ID_RIGHT=ID" for relates_with,

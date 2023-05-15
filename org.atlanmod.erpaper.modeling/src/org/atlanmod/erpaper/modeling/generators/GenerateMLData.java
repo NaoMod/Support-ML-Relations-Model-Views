@@ -123,11 +123,11 @@ public class GenerateMLData {
 		
 		createCSVSkeleton(csvPath, "Left_id", "Right_id");
 		
-		String jsonPath = here + "/../Data/" + DIRECTORY + "/Parameters.json";
-		
-		props.put("CLASS_LEFT", classLeft);
-		props.put("CLASS_RIGHT", classRight);
-		createJsonParams(jsonPath, props);
+//		String jsonPath = here + "/../Data/" + DIRECTORY + "/Parameters.json";
+//		
+//		props.put("CLASS_LEFT", classLeft);
+//		props.put("CLASS_RIGHT", classRight);
+//		createJsonParams(jsonPath, props);
 
 		// serialize XMI files
 		try {
