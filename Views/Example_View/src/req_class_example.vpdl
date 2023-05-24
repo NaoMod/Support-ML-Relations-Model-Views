@@ -1,0 +1,10 @@
+create view req_class as
+
+select Req.Requirement.*,
+	   Class.Class.*,
+	   Req.Requirement join Class.Class  as relates_with
+
+from 'http://requirements' as Req,
+	 'http://classes' as Class,
+	 
+where "s.longName = t.name" for relates_with,
