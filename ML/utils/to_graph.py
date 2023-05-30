@@ -161,10 +161,7 @@ class Func():
         edge_index = None
         if df_rels is None:
             return edge_index, edge_attr
-        # src = []
-        # for index in df_rels[src_index_col]:
-        #     src.append(src_mapping[index]) 
-
+        
         src = [src_mapping[index] for index in df_rels[src_index_col]]
         dst = [dst_mapping[index] for index in df_rels[dst_index_col]]
         edge_index = torch.tensor([src, dst])

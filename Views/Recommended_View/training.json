@@ -3,8 +3,15 @@
         "EPOCHS": 200,
         "LEARNING_RATE": 0.001,
         "ADD_NEGATIVE_TRAINING": false
+        "NEG_SAMPLING_RATIO": 2.0
     },
-    "gnn" : {
-        
+    "GNN" : {
+        "ARCH": {
+        	"OPERATOR" : "SAGEConv",
+        	"CONVOLUTIONS" : 2,
+        	"ACTIVATION": "relu",
+        	"HIDDEN_CHANNELS" : 64,
+        	"CLASSIFIER": "dot_product"
+        }
     }
 }
