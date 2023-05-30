@@ -1,0 +1,10 @@
+{
+    "training_parameters": {
+        "EPOCHS": 200,
+        "LEARNING_RATE": 0.001,
+        "ADD_NEGATIVE_TRAINING": false
+    },
+    "gnn" : {
+        
+    }
+}

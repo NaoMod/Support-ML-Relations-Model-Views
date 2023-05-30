@@ -7,7 +7,8 @@ select A.A.*,
 from 'http://a_model' as A,
 	 'http://b_model' as B,
 	 
-where "IGNORE_ATTRIBUTES_LEFT=ID" for relates_with,
-		"IGNORE_ATTRIBUTES_RIGHT=ID" for relates_with,
-		"UNIQUE_ID_LEFT=ID" for relates_with,
+where 	"UNIQUE_ID_LEFT=ID" for relates_with,
 		"UNIQUE_ID_RIGHT=ID" for relates_with,
+		"EMBEDDINGS_LEFT=A.a,A.s" for relates_with,
+		"EMBEDDINGS_RIGHT=B.b,B.s" for relates_with,
+		"STRINGS_ENCODING_KIND=all-MiniLM-L6-v2" for relates_with
