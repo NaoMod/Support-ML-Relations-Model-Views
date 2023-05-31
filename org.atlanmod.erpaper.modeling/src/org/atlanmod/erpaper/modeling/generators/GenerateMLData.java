@@ -139,26 +139,6 @@ public class GenerateMLData {
 	}
 
 	/**
-	 * Create the JSON parameters file used in the Machine Learning scripts
-	 * 
-	 * @param jsonPath Path for the generated file
-	 * @param props    Original properties created by the user with ML information
-	 * 
-	 * @throws IOException
-	 */
-	private static void createJsonParams(String jsonPath, Properties props) throws IOException {
-		Gson gsonObj = new Gson();
-		String strJson =  gsonObj.toJson(props);
-		
-		FileWriter jsonWriter = new FileWriter(jsonPath, false);
-		
-		jsonWriter.append(strJson);		
-		
-		jsonWriter.flush();
-		jsonWriter.close();		
-	}
-
-	/**
 	 * Create the skeleton of the CSV file with mandatory fields
 	 * 
 	 * @param csvPath     Path for the generated file

@@ -1,7 +1,6 @@
 from typing import Tuple, Optional
 import torch
 import pandas as pd
-import json
 
 from torch_geometric.data import HeteroData
 
