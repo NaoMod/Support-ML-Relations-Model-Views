@@ -1,17 +1,26 @@
 {
-    "TRAINING_PARAMETERS": {
-        "EPOCHS": 200,
-        "LEARNING_RATE": 0.001,
-        "ADD_NEGATIVE_TRAINING": false,
-        "NEG_SAMPLING_RATIO": 2.0
-    },
-    "GNN" : {
-        "ARCH": {
-        	"OPERATOR" : "SAGEConv",
-        	"CONVOLUTIONS" : 2,
-        	"ACTIVATION": "relu",
-        	"HIDDEN_CHANNELS" : 64,
-        	"CLASSIFIER": "dot_product"
-        }
+	"relates_with": {		
+		"ARCHITECTURE": {
+			"OPERATOR" : "SAGEConv",
+			"CONVOLUTIONS" : 2,
+			"ACTIVATION": "relu",
+			"HIDDEN_CHANNELS" : 64,
+			"CLASSIFIER": "dot_product"
+		},
+		"TRAINING_PARAMETERS": {
+			"EPOCHS": 200,
+			"LEARNING_RATE": 0.001,
+			"ADD_NEGATIVE_TRAINING": false,
+			"NEG_SAMPLING_RATIO": 2.0,
+			"LEFT_PATH":"../../Modeling_Resources/models/Example/AB/DatasetA.xmi",
+			"RIGHT_PATH": "../../Modeling_Resources/models/Example/AB/DatasetB.xmi",
+			"LINK_PATH": "../../Modeling_Resources/models/Example/AB/link.csv"
+		},
+		"EMBEDDINGS": {
+			"Requirement.ID": "number",
+			"Requirement.longName": "all-MiniLM-L6-v2",
+			"Class.qualifiedName": "all-MiniLM-L6-v2",
+			"Class.name": "all-MiniLM-L6-v2"	    	
+		}		
     }
 }

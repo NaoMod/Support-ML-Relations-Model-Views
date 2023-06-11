@@ -1,0 +1,26 @@
+{
+    "GNN" : {
+        "ARCHITECTURE": {
+        	"OPERATOR" : "SAGEConv",
+        	"CONVOLUTIONS" : 2,
+        	"ACTIVATION": "relu",
+        	"HIDDEN_CHANNELS" : 64,
+        	"CLASSIFIER": "dot_product"
+        },
+	    "TRAINING_PARAMETERS": {
+	        "EPOCHS": 200,
+	        "LEARNING_RATE": 0.001,
+	        "ADD_NEGATIVE_TRAINING": false,
+	        "NEG_SAMPLING_RATIO": 2.0,
+	        "LEFT_PATH":"../../Modeling_Resources/models/Example/AutoML.xmi",
+	        "RIGHT_PATH": "../../Modeling_Resources/models/Example/SysML.xmi",
+			"EXAMPLE_LINKS": "../../Modeling_Resources/models/Example/Links.csv"
+	    },
+	    "EMBEDDINGS": {
+	    	"InternalElement.description": "all-MiniLM-L6-v2",
+	    	"InternalElement.name": "one-hot-encoding",
+	    	"Block.name": "all-MiniLM-L6-v2",
+	    	"Block.qualifiedName": "one-hot-encoding" 	
+	    }
+    }
+}

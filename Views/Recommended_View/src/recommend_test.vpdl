@@ -1,0 +1,23 @@
+create view recommended as
+
+select A.A.*,
+	   B.B.*,
+	   A.A join B.B  as relates_with,
+	   A.A join B.B as relates_2,
+
+from 'http://a_model' as A,
+	 'http://b_model' as B,
+	 
+where 	"UNIQUE_ID_LEFT=ID" for relates_with,
+		"UNIQUE_ID_RIGHT=ID" for relates_with,
+		
+		"EMBEDDINGS_LEFT=A.a,A.s" for relates_with,
+		"EMBEDDINGS_RIGHT=B.b,B.s" for relates_with,
+		
+		"STRINGS_ENCODING_KIND=all-MiniLM-L6-v2" for relates_with,
+		
+		"UNIQUE_ID_LEFT=ID" for relates_2,
+		"UNIQUE_ID_RIGHT=ID" for relates_2,
+		"EMBEDDINGS_LEFT=A.a,A.s" for relates_2,
+		"EMBEDDINGS_RIGHT=B.b,B.s" for relates_2,
+		"STRINGS_ENCODING_KIND=all-MiniLM-L6-v2" for relates_2

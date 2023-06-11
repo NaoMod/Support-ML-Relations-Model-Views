@@ -1,10 +1,10 @@
-create view req_class as
+create view component_block as
 
-select Req.Requirement.*,
-	   Class.Class.*,
-	   Req.Requirement join Class.Class  as relates_with
+select Spec.Requirement.*,
+	   UML.Class.*,
+	   Spec.Requirement join UML.Class  as relates_with
 
-from 'http://requirements' as Req,
-	 'http://classes' as Class,
+from 'http://requirements' as Spec,
+	 'http://www.eclipse.org/uml2/5.0.0/UML' as UML,
 	 
-where "s.longName = t.name" for relates_with,
+where "{Requirement.longName,Requirement.ID} <~> {Class.name,Class.qualifiedName}" for relates_with

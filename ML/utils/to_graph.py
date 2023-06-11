@@ -8,11 +8,11 @@ from utils.encoders import IdentityEncoder, SequenceEncoder
 
 class Func():
 
-    def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_to_ignore_left = None, features_to_ignore_right = None, unique_id_left= None, unique_id_right = None):
+    def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_for_embedding_left = None, features_for_embedding_right = None, unique_id_left= None, unique_id_right = None):
         
         self.sentence_encoding_name = sentence_encoding_name
-        self.features_to_ignore_left = features_to_ignore_left
-        self.features_to_ignore_right = features_to_ignore_right
+        self.features_for_embedding_left = features_for_embedding_left
+        self.features_for_embedding_right = features_for_embedding_right
         self.unique_id_left = unique_id_left
         self.unique_id_right = unique_id_right
 
@@ -23,29 +23,45 @@ class Func():
         Left_wrapper = {}
         Right_wrapper = {}
 
+        attributes_left_class = self.features_for_embedding_left #TODO[s.split(".",1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
         for element in model_root_left:
             if self.unique_id_left is None:
                 if 'uriFragment' not in Left_wrapper:
                     Left_wrapper['uriFragment'] = []
                 Left_wrapper['uriFragment'].append(element.eURIFragment())
+            else:
+                if self.unique_id_left not in Left_wrapper:
+                    Left_wrapper[self.unique_id_left] = []
+                Left_wrapper[self.unique_id_left].append(element.eGet(self.unique_id_left))
 
-            for attribute in element.eClass.eAttributes:
-                attributeName = attribute.name
-                if attributeName not in Left_wrapper:
-                    Left_wrapper[attributeName] = []
-                Left_wrapper[attributeName].append(element.eGet(attribute))       
+            className = element.eClass.name
+            if className == class_left:
+                for attribute in element.eClass.eAttributes:
+                    attributeName = attribute.name
+                    if  self.features_for_embedding_left is not None and attributeName in attributes_left_class:
+                        if attributeName not in Left_wrapper:
+                            Left_wrapper[attributeName] = []
+                        Left_wrapper[attributeName].append(element.eGet(attribute))       
 
+        attributes_right_class = self.features_for_embedding_right #TODO[s.split(".",1)[1] for s in self.features_for_embedding_right if s.count(".") == 1]
         for element in model_root_right:
             if self.unique_id_right is None:
                 if 'uriFragment' not in Right_wrapper:
                     Right_wrapper['uriFragment'] = []
                 Right_wrapper['uriFragment'].append(element.eURIFragment())
+            else:
+               if self.unique_id_right not in Right_wrapper:
+                    Right_wrapper[self.unique_id_right] = []
+               Right_wrapper[self.unique_id_right].append(element.eGet(self.unique_id_right))
 
-            for attribute in element.eClass.eAttributes:
-                attributeName = attribute.name
-                if attributeName not in Right_wrapper:
-                    Right_wrapper[attributeName] = []
-                Right_wrapper[attributeName].append(element.eGet(attribute))
+            className = element.eClass.name
+            if className == class_right:
+                for attribute in element.eClass.eAttributes:
+                    attributeName = attribute.name
+                    if  self.features_for_embedding_right is not None and attributeName in attributes_right_class:
+                        if attributeName not in Right_wrapper:
+                            Right_wrapper[attributeName] = []
+                        Right_wrapper[attributeName].append(element.eGet(attribute))
                 
         df_left = pd.DataFrame(Left_wrapper)
         df_right = pd.DataFrame(Right_wrapper)
@@ -63,11 +79,11 @@ class Func():
         df_left = df_left.set_index(left_index, drop=False)
         df_right = df_right.set_index(right_index, drop=False)
 
-        data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_to_ignore_left)
+        data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_for_embedding_left)
         data[class_left].num_nodes = len(left_mapping)
         data[class_left].node_id = torch.Tensor(list(left_mapping.values())).long()
 
-        data[class_right].x, right_mapping = self._load_nodes(df_right, self.features_to_ignore_right)
+        data[class_right].x, right_mapping = self._load_nodes(df_right, self.features_for_embedding_right)
         data[class_right].num_nodes = len(right_mapping)
         data[class_right].node_id = torch.Tensor(list(right_mapping.values())).long()
 
@@ -89,7 +105,7 @@ class Func():
 
         return data, left_mapping, right_mapping
 
-    def _load_nodes(self, df, features_to_ignore) -> Tuple[torch.Tensor, dict]:
+    def _load_nodes(self, df, features_for_embedding) -> Tuple[torch.Tensor, dict]:
         """
         Load the node features
 
@@ -97,7 +113,7 @@ class Func():
         ---------- 
         df: DataFrame
             Dataframe that contains nodes information to be encoded.
-        features_to_ignore: lst
+        features_for_embedding: lst
             List of features to be inored during encoding.
 
         Returns
@@ -111,7 +127,7 @@ class Func():
         encoders = {}
         
         for column_name, _ in df.items():
-            if features_to_ignore is None or column_name not in features_to_ignore:
+            if features_for_embedding is None or column_name not in features_for_embedding:
                 # Define the encoders for each column
                 if df[column_name].dtype.kind in 'biufc':
                     # biufc means "numeric" columns. bool, int, uint, float, complex
@@ -172,3 +188,22 @@ class Func():
             edge_attr = torch.cat(edge_attrs, dim=-1)
 
         return edge_index, edge_attr
+    
+    def get_attributtes(model_root, check_class_name, features_for_embedding, wrapper):
+        attributes_of_class = [s.split(".",1)[1] for s in features_for_embedding if s.count(".") == 1]
+
+        not_filtered_attributes = [s for s in features_for_embedding if s not in attributes_of_class]
+        for element in model_root:
+            className = element.eClass.name
+            if className == check_class_name:
+                for attribute in element.eClass.eAttributes:
+                    attributeName = attribute.name
+                    if  features_for_embedding is not None and attributeName in attributes_of_class:
+                        if attributeName not in wrapper:
+                            wrapper[attributeName] = []
+                        wrapper[attributeName].append(element.eGet(attribute))
+
+                if len(not_filtered_attributes) > 0:
+                    # call the function again for the children
+                    get_attributtes(element, check_class_name, features_for_embedding, wrapper)
+        
