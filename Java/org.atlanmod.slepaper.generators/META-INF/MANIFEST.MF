@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Generators
+Bundle-SymbolicName: org.atlanmod.slepaper.generators
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.emf;bundle-version="2.8.0",
+ com.google.gson;bundle-version="2.9.1",
+ org.atlanmod.emfviews;bundle-version="0.4.0",
+ org.atlanmod.emfviews.virtuallinks;bundle-version="0.4.0"
+Automatic-Module-Name: org.atlanmod.slepaper.generators
+Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -6,7 +6,7 @@ from torch_geometric.data import HeteroData
 
 from utils.encoders import IdentityEncoder, SequenceEncoder
 
-class Func():
+class ToGraph():
 
     def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_for_embedding_left = None, features_for_embedding_right = None, unique_id_left= None, unique_id_right = None):
         
@@ -23,7 +23,8 @@ class Func():
         Left_wrapper = {}
         Right_wrapper = {}
 
-        attributes_left_class = self.features_for_embedding_left #TODO[s.split(".",1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
+        attributes_left_class = [s.split(".",1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
+        #TODO: How to get attributes from other classes?
         for element in model_root_left:
             if self.unique_id_left is None:
                 if 'uriFragment' not in Left_wrapper:

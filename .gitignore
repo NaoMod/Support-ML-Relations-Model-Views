@@ -273,6 +273,3 @@ replay_pid*
 
 github_token.txt
 *.png
-
-#Virtual enviroment files
-envML
