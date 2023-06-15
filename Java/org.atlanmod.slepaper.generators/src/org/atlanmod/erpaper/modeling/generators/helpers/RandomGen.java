@@ -123,7 +123,7 @@ public class RandomGen {
 		Set<String> ret = new HashSet<String>();
 
 		while (ret.size() < sz) {
-			//strings with size between 1 and 15
+			//strings with size between 3 and 15
 			ret.add(getAlphaNumericString(generateInt(3, 15)));
 		}
 
