@@ -12,7 +12,7 @@ def print_pr_curve(precision, recall, title, pr_auc, no_skill, display = False):
     ax.set_xlabel('Recall')
 
     plt.legend(loc='best')
-    if display:
+    if not display:
         #display plot
         plt.show
     else:
@@ -32,7 +32,7 @@ def print_roc_curve(fpr, tpr, title, roc_auc, display = False):
     ax.set_xlabel('False Positive Rate(FPR)')
 
     plt.legend(loc='best')
-    if display:
+    if not display:
         #display plot
         plt.show
     else:

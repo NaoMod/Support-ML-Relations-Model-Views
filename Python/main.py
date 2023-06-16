@@ -20,15 +20,19 @@ from sklearn.metrics import auc as area_curve
 from os import path as osp
 import glob
 import json
+from pathlib import Path
 
 from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
 
-VIEW_DIRECTORY = '../Views/Recommended_View'
+VIEWS_DIRECTORY = 'Views'
+VIEW_NAME = 'Recommended_View'
 
 # Read JSON files to get GNN properties
-json_path = osp.join(VIEW_DIRECTORY, 'src-gen', "recommended.json")
-json_training_path = osp.join(VIEW_DIRECTORY, "training.json")
+json_path = glob.glob(osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, 'src-gen', "recommended.json"))[0]
+json_training_path = glob.glob(osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, "training.json"))[0]
+#TODO: replace Data by the models in training.json
+data_path = glob.glob(osp.join(Path(__file__).parent, '..', 'Data', "AB"))[0]
 
 parameters_for_view_exist = len(json_path) != 0
 training_exist = len(json_training_path) != 0
@@ -66,10 +70,10 @@ with open(parameters_for_view) as json_data:
 
             # Register the metamodels in the resource set    
             resource_set = ResourceSet()
-            modeling_resources_path = osp.join('../../Modeling_Resources/')
+            modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..','Modeling_Resources'))[0]
 
-            ecore_path_a = osp.join(modeling_resources_path, 'metamodels/A.ecore')
-            ecore_path_b =osp.join(modeling_resources_path, 'metamodels/B.ecore')
+            ecore_path_a = glob.glob(osp.join(modeling_resources_path, 'metamodels/A.ecore'))[0]
+            ecore_path_b =glob.glob(osp.join(modeling_resources_path, 'metamodels/B.ecore'))[0]
 
             resource_a = resource_set.get_resource(URI(ecore_path_a))
             mm_root_a = resource_a.contents[0]
@@ -88,9 +92,7 @@ with open(parameters_for_view) as json_data:
             #else:
             #    features_for_embedding_right = None
 
-            STRINGS_ENCODER="all-MiniLM-L6-v2"
-
-            dataset_func = ToGraph(sentence_encoding_name=STRINGS_ENCODER, features_for_embedding_left=features_for_embedding_left, features_for_embedding_right=features_for_embedding_right, unique_id_left=UNIQUE_ID_LEFT, unique_id_right=UNIQUE_ID_RIGHT)
+            dataset_func = ToGraph(embeddings_information=training_parameters[relation_name]["EMBEDDINGS"], features_for_embedding_left=features_for_embedding_left, features_for_embedding_right=features_for_embedding_right)
             # Register the models in the resource set
             xmi_path_left = glob.glob(osp.join(data_path, "DatasetLeft.xmi"))[0]
             m_resource_left = resource_set.get_resource(URI(xmi_path_left))
@@ -353,7 +355,7 @@ with open(parameters_for_view) as json_data:
             threshold = roc.iloc[(roc.tf-0).abs().argsort()[:1]]['thresholds']
             predictions = {}
 
-            for uri_idenifier_left, left_id in tqdm(left_original_mapping.items()):
+            for uri_idenifier_left, left_id in tqdm.tqdm(left_original_mapping.items()):
                 predictions[uri_idenifier_left] = []
 
                 left_row = torch.tensor([left_id] * total_class_right) 
@@ -364,15 +366,15 @@ with open(parameters_for_view) as json_data:
                 with torch.no_grad(): 
                     pred = model(data)
                 # cut off by threshold
-                optimal_pred = (pred > threshold).long()
+                optimal_pred = (pred > threshold[0]).long()
                 probabilities = torch.sigmoid(pred)
-                pred_labels = (probabilities > threshold).long()
+                pred_labels = (probabilities > threshold[0]).long()
 
                 recommended_links = all_right_ids[pred_labels == 1].tolist()
 
                 predictions[uri_idenifier_left] = recommended_links
 
-                predicted_path = osp.join(VIEW_DIRECTORY, "recommendations.json")
+                predicted_path = osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, "recommendations.json")
 
                 inv_right_mapping = {v: k for k, v in right_original_mapping.items()}
                 json_dict = {}

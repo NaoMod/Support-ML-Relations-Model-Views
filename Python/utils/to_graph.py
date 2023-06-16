@@ -8,13 +8,11 @@ from utils.encoders import IdentityEncoder, SequenceEncoder
 
 class ToGraph():
 
-    def __init__(self, sentence_encoding_name: Optional[str] = "all-MiniLM-L6-v2", features_for_embedding_left = None, features_for_embedding_right = None, unique_id_left= None, unique_id_right = None):
+    def __init__(self, embeddings_information, features_for_embedding_left = None, features_for_embedding_right = None):
         
-        self.sentence_encoding_name = sentence_encoding_name
         self.features_for_embedding_left = features_for_embedding_left
         self.features_for_embedding_right = features_for_embedding_right
-        self.unique_id_left = unique_id_left
-        self.unique_id_right = unique_id_right
+        self.embeddings_information = embeddings_information
 
 
     def xmi_to_graph(self, model_root_left, model_root_right, relations_csv_path, class_left, class_right, relation_name):
@@ -24,42 +22,32 @@ class ToGraph():
         Right_wrapper = {}
 
         attributes_left_class = [s.split(".",1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
-        #TODO: How to get attributes from other classes?
+        #TODO: To get attributes from other classes and implement navigation
+        unique_id_left = None
         for element in model_root_left:
-            if self.unique_id_left is None:
-                if 'uriFragment' not in Left_wrapper:
-                    Left_wrapper['uriFragment'] = []
-                Left_wrapper['uriFragment'].append(element.eURIFragment())
-            else:
-                if self.unique_id_left not in Left_wrapper:
-                    Left_wrapper[self.unique_id_left] = []
-                Left_wrapper[self.unique_id_left].append(element.eGet(self.unique_id_left))
-
             className = element.eClass.name
             if className == class_left:
                 for attribute in element.eClass.eAttributes:
                     attributeName = attribute.name
-                    if  self.features_for_embedding_left is not None and attributeName in attributes_left_class:
+                    if attribute.unique and unique_id_left is None:
+                        # important to store the unique attribute to identify the element among all models
+                        unique_id_left = attribute.name
+                    if  self.features_for_embedding_left is not None and (attributeName in attributes_left_class or attributeName == unique_id_left):
                         if attributeName not in Left_wrapper:
                             Left_wrapper[attributeName] = []
-                        Left_wrapper[attributeName].append(element.eGet(attribute))       
+                        Left_wrapper[attributeName].append(element.eGet(attribute))      
 
-        attributes_right_class = self.features_for_embedding_right #TODO[s.split(".",1)[1] for s in self.features_for_embedding_right if s.count(".") == 1]
+        attributes_right_class = [s.split(".",1)[1] for s in self.features_for_embedding_right if s.count(".") == 1]
+        unique_id_right = None
         for element in model_root_right:
-            if self.unique_id_right is None:
-                if 'uriFragment' not in Right_wrapper:
-                    Right_wrapper['uriFragment'] = []
-                Right_wrapper['uriFragment'].append(element.eURIFragment())
-            else:
-               if self.unique_id_right not in Right_wrapper:
-                    Right_wrapper[self.unique_id_right] = []
-               Right_wrapper[self.unique_id_right].append(element.eGet(self.unique_id_right))
-
             className = element.eClass.name
             if className == class_right:
                 for attribute in element.eClass.eAttributes:
                     attributeName = attribute.name
-                    if  self.features_for_embedding_right is not None and attributeName in attributes_right_class:
+                    if attribute.unique and unique_id_right is None:
+                        # important to store the unique attribute to identify the element among all models
+                        unique_id_right = attribute.name
+                    if  self.features_for_embedding_right is not None and (attributeName in attributes_right_class or attributeName == unique_id_right):
                         if attributeName not in Right_wrapper:
                             Right_wrapper[attributeName] = []
                         Right_wrapper[attributeName].append(element.eGet(attribute))
@@ -69,22 +57,15 @@ class ToGraph():
         
         df_rels = pd.read_csv(relations_csv_path)
         left_id, right_id = df_rels.columns.values
-        if self.unique_id_left is None or self.unique_id_right is None:
-            #adjust the problem with / and /0 in URI fragments
-            df_rels.loc[(df_rels[left_id] == "/"), left_id] = "/0"
-            df_rels.loc[(df_rels[right_id] == "/"), right_id] = "/0"
 
-        left_index = self.unique_id_left or 'uriFragment'
-        right_index = self.unique_id_right or 'uriFragment'
+        df_left = df_left.set_index(unique_id_left, drop=False)
+        df_right = df_right.set_index(unique_id_right, drop=False)
 
-        df_left = df_left.set_index(left_index, drop=False)
-        df_right = df_right.set_index(right_index, drop=False)
-
-        data[class_left].x, left_mapping = self._load_nodes(df_left, self.features_for_embedding_left)
+        data[class_left].x, left_mapping = self._load_nodes(df_left, self.embeddings_information)
         data[class_left].num_nodes = len(left_mapping)
         data[class_left].node_id = torch.Tensor(list(left_mapping.values())).long()
 
-        data[class_right].x, right_mapping = self._load_nodes(df_right, self.features_for_embedding_right)
+        data[class_right].x, right_mapping = self._load_nodes(df_right, self.embeddings_information)
         data[class_right].num_nodes = len(right_mapping)
         data[class_right].node_id = torch.Tensor(list(right_mapping.values())).long()
 
@@ -190,21 +171,21 @@ class ToGraph():
 
         return edge_index, edge_attr
     
-    def get_attributtes(model_root, check_class_name, features_for_embedding, wrapper):
-        attributes_of_class = [s.split(".",1)[1] for s in features_for_embedding if s.count(".") == 1]
+    # def get_attributtes(model_root, check_class_name, features_for_embedding, wrapper):
+    #     attributes_of_class = [s.split(".",1)[1] for s in features_for_embedding if s.count(".") == 1]
 
-        not_filtered_attributes = [s for s in features_for_embedding if s not in attributes_of_class]
-        for element in model_root:
-            className = element.eClass.name
-            if className == check_class_name:
-                for attribute in element.eClass.eAttributes:
-                    attributeName = attribute.name
-                    if  features_for_embedding is not None and attributeName in attributes_of_class:
-                        if attributeName not in wrapper:
-                            wrapper[attributeName] = []
-                        wrapper[attributeName].append(element.eGet(attribute))
+    #     not_filtered_attributes = [s for s in features_for_embedding if s not in attributes_of_class]
+    #     for element in model_root:
+    #         className = element.eClass.name
+    #         if className == check_class_name:
+    #             for attribute in element.eClass.eAttributes:
+    #                 attributeName = attribute.name
+    #                 if  features_for_embedding is not None and attributeName in attributes_of_class:
+    #                     if attributeName not in wrapper:
+    #                         wrapper[attributeName] = []
+    #                     wrapper[attributeName].append(element.eGet(attribute))
 
-                if len(not_filtered_attributes) > 0:
-                    # call the function again for the children
-                    get_attributtes(element, check_class_name, features_for_embedding, wrapper)
+    #             if len(not_filtered_attributes) > 0:
+    #                 # call the function again for the children
+    #                 get_attributtes(element, check_class_name, features_for_embedding, wrapper)
         

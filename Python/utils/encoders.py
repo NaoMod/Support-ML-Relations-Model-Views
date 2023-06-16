@@ -1,7 +1,7 @@
 import torch
 from sentence_transformers import SentenceTransformer
 
-# Encoders were adapted from @see https://github.com/pyg-team/pytorch_geometric/blob/master/examples/hetero/load_csv.py
+# SequenceEncoder was adapted from @see https://github.com/pyg-team/pytorch_geometric/blob/master/examples/hetero/load_csv.py
 class SequenceEncoder(object):
     # The 'SequenceEncoder' encodes raw column strings into embeddings.
     def __init__(self, model_name='all-MiniLM-L6-v2', device=None):
@@ -14,7 +14,7 @@ class SequenceEncoder(object):
                               convert_to_tensor=True, device=self.device)
         return x.cpu()
 
-
+# IdentityEncoder was adapted from @see https://github.com/pyg-team/pytorch_geometric/blob/master/examples/hetero/load_csv.py
 class IdentityEncoder(object):
     # The 'IdentityEncoder' takes the raw column values and converts them to
     # PyTorch tensors.
