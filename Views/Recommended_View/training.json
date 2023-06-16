@@ -14,13 +14,13 @@
 			"NEG_SAMPLING_RATIO": 2.0,
 			"LEFT_PATH":"../../Modeling_Resources/models/Example/AB/DatasetA.xmi",
 			"RIGHT_PATH": "../../Modeling_Resources/models/Example/AB/DatasetB.xmi",
-			"LINK_PATH": "../../Modeling_Resources/models/Example/AB/link.csv"
+			"LINK_PATH": "../../Modeling_Resources/models/Example/AB/Releations.csv"
 		},
 		"EMBEDDINGS": {
-			"Requirement.ID": "number",
-			"Requirement.longName": "all-MiniLM-L6-v2",
-			"Class.qualifiedName": "all-MiniLM-L6-v2",
-			"Class.name": "all-MiniLM-L6-v2"	    	
+			"A.a": "identity",
+			"A.s": "all-MiniLM-L6-v2",
+			"B.b": "identity",
+			"B.s":"all-MiniLM-L6-v2"    	
 		}		
     }
 }
