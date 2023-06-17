@@ -1,0 +1,10 @@
+create view recommended as
+
+select Users.User.ID,
+	   Movies.Movie.*,
+	   Users.User join Movies.Movie  as rate
+
+from 'http://users' as Users,
+	 'http://movies' as Movies,
+	 
+where 	"{User.ID}<~>{Movie.Title}" for rate

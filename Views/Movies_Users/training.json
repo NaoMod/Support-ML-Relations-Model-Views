@@ -1,0 +1,24 @@
+{
+	"rate": {		
+		"ARCHITECTURE": {
+			"OPERATOR" : "SAGEConv",
+			"CONVOLUTIONS" : 2,
+			"ACTIVATION": "relu",
+			"HIDDEN_CHANNELS" : 64,
+			"CLASSIFIER": "dot_product"
+		},
+		"TRAINING_PARAMETERS": {
+			"EPOCHS": 100,
+			"LEARNING_RATE": 0.001,
+			"ADD_NEGATIVE_TRAINING": false,
+			"NEG_SAMPLING_RATIO": 2.0,
+			"LEFT_PATH":"models/Example/MovieLens/Users.xmi",
+			"RIGHT_PATH": "models/Example/MovieLens/Movies.xmi",
+			"LINK_PATH": "models/Example/MovieLens/Relations.csv"
+		},
+		"EMBEDDINGS": {
+			"User.ID": "number",
+			"Movie.title": "all-MiniLM-L6-v2"   	
+		}		
+    }
+}

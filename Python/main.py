@@ -26,7 +26,7 @@ from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
 
 VIEWS_DIRECTORY = 'Views'
-VIEW_NAME = 'Recommended_View'
+VIEW_NAME = 'Movies_Users'
 
 # Read JSON files to get GNN properties
 json_path = glob.glob(osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, 'src-gen', "recommended.json"))[0]
@@ -72,16 +72,17 @@ with open(parameters_for_view) as json_data:
             resource_set = ResourceSet()
             modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..','Modeling_Resources'))[0]
 
-            ecore_path_a = glob.glob(osp.join(modeling_resources_path, 'metamodels/A.ecore'))[0]
-            ecore_path_b =glob.glob(osp.join(modeling_resources_path, 'metamodels/B.ecore'))[0]
+            #TODO: Include as paameters in training
+            ecore_path_left = glob.glob(osp.join(modeling_resources_path, 'metamodels/Users.ecore'))[0]
+            ecore_path_right =glob.glob(osp.join(modeling_resources_path, 'metamodels/Movies.ecore'))[0]
 
-            resource_a = resource_set.get_resource(URI(ecore_path_a))
-            mm_root_a = resource_a.contents[0]
-            resource_b = resource_set.get_resource(URI(ecore_path_b))
-            mm_root_b = resource_b.contents[0]
+            resource_left = resource_set.get_resource(URI(ecore_path_left))
+            mm_root_left = resource_left.contents[0]
+            resource_right = resource_set.get_resource(URI(ecore_path_right))
+            mm_root_right = resource_right.contents[0]
 
-            resource_set.metamodel_registry[mm_root_a.nsURI] = mm_root_a
-            resource_set.metamodel_registry[mm_root_b.nsURI] = mm_root_b
+            resource_set.metamodel_registry[mm_root_left.nsURI] = mm_root_left
+            resource_set.metamodel_registry[mm_root_right.nsURI] = mm_root_right
 
             #if EMBEDDINGS_LEFT is not None:
             features_for_embedding_left = relation_props['CLASS_LEFT_EMBEDDINGS'].split(',')
@@ -94,15 +95,15 @@ with open(parameters_for_view) as json_data:
 
             dataset_func = ToGraph(embeddings_information=training_parameters[relation_name]["EMBEDDINGS"], features_for_embedding_left=features_for_embedding_left, features_for_embedding_right=features_for_embedding_right)
             # Register the models in the resource set
-            xmi_path_left = glob.glob(osp.join(data_path, "DatasetLeft.xmi"))[0]
+            xmi_path_left = glob.glob(osp.join(modeling_resources_path, training_parameters[relation_name]["TRAINING_PARAMETERS"]["LEFT_PATH"]))[0]
             m_resource_left = resource_set.get_resource(URI(xmi_path_left))
             model_root_left = m_resource_left.contents
 
-            xmi_path_right = glob.glob(osp.join(data_path, "DatasetRight.xmi"))[0]
+            xmi_path_right = glob.glob(osp.join(modeling_resources_path, training_parameters[relation_name]["TRAINING_PARAMETERS"]["RIGHT_PATH"]))[0]
             m_resource_right = resource_set.get_resource(URI(xmi_path_right))
             model_root_right = m_resource_right.contents
 
-            relations_path = glob.glob(osp.join(data_path, "Relations.csv"))
+            relations_path = glob.glob(osp.join(modeling_resources_path, training_parameters[relation_name]["TRAINING_PARAMETERS"]["LINK_PATH"]))
             relations_exist = len(relations_path) != 0
             relations_for_graph = None
             if relations_exist:

@@ -56,7 +56,7 @@ class ToGraph():
         df_right = pd.DataFrame(Right_wrapper)
         
         df_rels = pd.read_csv(relations_csv_path)
-        left_id, right_id = df_rels.columns.values
+        left_id, right_id = df_rels.columns.values[0:2]
 
         df_left = df_left.set_index(unique_id_left, drop=False)
         df_right = df_right.set_index(unique_id_right, drop=False)
@@ -111,7 +111,7 @@ class ToGraph():
         encoders = {}
         
         for column_name, _ in df.items():
-            if features_for_embedding is None or column_name not in features_for_embedding:
+            if features_for_embedding is not None and column_name in features_for_embedding:
                 #get the complete identifier of attribute to verify the list
                 idx_name = class_name + '.' + column_name
                 #check if the user defined a specific embedding technique
