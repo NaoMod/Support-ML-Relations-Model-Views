@@ -84,11 +84,11 @@ with open(parameters_for_view) as json_data:
             resource_set.metamodel_registry[mm_root_b.nsURI] = mm_root_b
 
             #if EMBEDDINGS_LEFT is not None:
-            features_for_embedding_left = ['a', 's']
+            features_for_embedding_left = relation_props['CLASS_LEFT_EMBEDDINGS'].split(',')
             #else:
             #    features_for_embedding_left = None
             #if EMBEDDINGS_RIGHT is not None:
-            features_for_embedding_right = ['b', 'c', 'd', 's']
+            features_for_embedding_right = relation_props['CLASS_RIGHT_EMBEDDINGS'].split(',')
             #else:
             #    features_for_embedding_right = None
 

@@ -61,11 +61,11 @@ class ToGraph():
         df_left = df_left.set_index(unique_id_left, drop=False)
         df_right = df_right.set_index(unique_id_right, drop=False)
 
-        data[class_left].x, left_mapping = self._load_nodes(df_left, self.embeddings_information)
+        data[class_left].x, left_mapping = self._load_nodes(class_left, df_left, attributes_left_class)
         data[class_left].num_nodes = len(left_mapping)
         data[class_left].node_id = torch.Tensor(list(left_mapping.values())).long()
 
-        data[class_right].x, right_mapping = self._load_nodes(df_right, self.embeddings_information)
+        data[class_right].x, right_mapping = self._load_nodes(class_right, df_right, attributes_right_class)
         data[class_right].num_nodes = len(right_mapping)
         data[class_right].node_id = torch.Tensor(list(right_mapping.values())).long()
 
@@ -87,12 +87,14 @@ class ToGraph():
 
         return data, left_mapping, right_mapping
 
-    def _load_nodes(self, df, features_for_embedding) -> Tuple[torch.Tensor, dict]:
+    def _load_nodes(self, class_name, df, features_for_embedding) -> Tuple[torch.Tensor, dict]:
         """
         Load the node features
 
         Parameters
         ---------- 
+        class_name: str
+            Name of the class to check the embedding type.
         df: DataFrame
             Dataframe that contains nodes information to be encoded.
         features_for_embedding: lst
@@ -110,12 +112,28 @@ class ToGraph():
         
         for column_name, _ in df.items():
             if features_for_embedding is None or column_name not in features_for_embedding:
-                # Define the encoders for each column
-                if df[column_name].dtype.kind in 'biufc':
-                    # biufc means "numeric" columns. bool, int, uint, float, complex
-                    encoders[column_name] = IdentityEncoder(dtype=torch.float)
+                #get the complete identifier of attribute to verify the list
+                idx_name = class_name + '.' + column_name
+                #check if the user defined a specific embedding technique
+                if idx_name in self.embeddings_information:
+                    if self.embeddings_information[idx_name] == 'number':
+                        encoders[column_name] = IdentityEncoder(dtype=torch.float)
+                    elif self.embeddings_information[idx_name] == 'enum':
+                        #TODO
+                        raise NotImplemented
+                    elif 'one-hot-encoding':
+                         #TODO
+                        raise NotImplemented
+                    else:
+                        #consider pre-trained language model from sentence-transformers
+                        encoders[column_name] = SequenceEncoder(self.embeddings_information[idx_name])
                 else:
-                    encoders[column_name] = SequenceEncoder(self.sentence_encoding_name)
+                    # Fallback to define the encoders for each column when user didn't define it
+                    if df[column_name].dtype.kind in 'biufc':
+                        # biufc means "numeric" columns. bool, int, uint, float, complex
+                        encoders[column_name] = IdentityEncoder(dtype=torch.float)
+                    else:
+                        encoders[column_name] = SequenceEncoder()
 
         mapping = {index: i for i, index in enumerate(df.index.unique())}
 

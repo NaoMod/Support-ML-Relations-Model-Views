@@ -17,9 +17,9 @@
 			"LINK_PATH": "../../Modeling_Resources/models/Example/AB/Releations.csv"
 		},
 		"EMBEDDINGS": {
-			"A.a": "identity",
+			"A.a": "number",
 			"A.s": "all-MiniLM-L6-v2",
-			"B.b": "identity",
+			"B.b": "number",
 			"B.s":"all-MiniLM-L6-v2"    	
 		}		
     }
