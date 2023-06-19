@@ -7,4 +7,4 @@ select Users.User.ID,
 from 'http://users' as Users,
 	 'http://movies' as Movies,
 	 
-where 	"{User.ID}<~>{Movie.Title}" for rate
+where 	"{User.ID}<~>{Movie.Genres}" for rate

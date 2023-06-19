@@ -4,7 +4,7 @@ import pandas as pd
 
 from torch_geometric.data import HeteroData
 
-from utils.encoders import IdentityEncoder, SequenceEncoder
+from utils.encoders import IdentityEncoder, SequenceEncoder, EnumEncoder, NoneEncoder
 
 class ToGraph():
 
@@ -119,11 +119,12 @@ class ToGraph():
                     if self.embeddings_information[idx_name] == 'number':
                         encoders[column_name] = IdentityEncoder(dtype=torch.float)
                     elif self.embeddings_information[idx_name] == 'enum':
-                        #TODO
-                        raise NotImplemented
-                    elif 'one-hot-encoding':
+                        encoders[column_name] = EnumEncoder(dtype=torch.float)
+                    elif self.embeddings_information[idx_name] == 'one-hot-encoding':
                          #TODO
                         raise NotImplemented
+                    elif self.embeddings_information[idx_name] == 'id':
+                        encoders[column_name] = NoneEncoder(dtype=torch.float)
                     else:
                         #consider pre-trained language model from sentence-transformers
                         encoders[column_name] = SequenceEncoder(self.embeddings_information[idx_name])
@@ -140,7 +141,8 @@ class ToGraph():
         x = None
         if encoders is not None and len(encoders) > 0:
             xs = [encoder(df[col]) for col, encoder in encoders.items()]
-            x = torch.cat(xs, dim=-1)
+            if xs is not None and xs != [None]:
+                x = torch.cat(xs, dim=-1)
 
         return x, mapping
 

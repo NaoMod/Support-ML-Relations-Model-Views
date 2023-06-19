@@ -8,7 +8,7 @@
 			"CLASSIFIER": "dot_product"
 		},
 		"TRAINING_PARAMETERS": {
-			"EPOCHS": 100,
+			"EPOCHS": 2,
 			"LEARNING_RATE": 0.001,
 			"ADD_NEGATIVE_TRAINING": false,
 			"NEG_SAMPLING_RATIO": 2.0,
@@ -17,8 +17,8 @@
 			"LINK_PATH": "models/Example/MovieLens/Relations.csv"
 		},
 		"EMBEDDINGS": {
-			"User.ID": "number",
-			"Movie.title": "all-MiniLM-L6-v2"   	
+			"User.ID": "id",
+			"Movie.Genres": "enum"   	
 		}		
     }
 }

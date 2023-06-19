@@ -224,12 +224,12 @@ with open(parameters_for_view) as json_data:
 
                 def __init__(self, hidden_channels, data):
                     super().__init__()
-                    # Since the dataset does not come with rich features, we also learn two
-                    # embedding matrices for A and B:
+                    # When the dataset does not come with rich features, we also learn two
+                    # embedding matrices for Left and Right:
                     self.left_lin = torch.nn.Linear(data[class_left].num_features, hidden_channels)
                     self.right_lin = torch.nn.Linear(data[class_right].num_features, hidden_channels)
-                    # self.left_emb = torch.nn.Embedding(data[class_left].num_nodes, hidden_channels)
-                    # self.right_emb = torch.nn.Embedding(data[class_right].num_nodes, hidden_channels)
+                    self.left_emb = torch.nn.Embedding(data[class_left].num_nodes, hidden_channels)
+                    self.right_emb = torch.nn.Embedding(data[class_right].num_nodes, hidden_channels)
 
                     # Instantiate homogeneous GNN:
                     self.gnn = GNN(hidden_channels)
@@ -253,11 +253,22 @@ with open(parameters_for_view) as json_data:
                         output tensor
                     """
                     
-                    x_dict = {
-                    #   class_left: self.A_lin(data[class_left].x) + self.left_emb(data[class_left].node_id),
-                    class_left: self.left_lin(data[class_left].x) ,#+ self.left_emb(data[class_left].node_id),
-                    class_right: self.right_lin(data[class_right].x) ,#+ self.right_emb(data[class_right].node_id),
-                    } 
+                    if not hasattr(data[class_left], 'x') or data[class_left].x == None:
+                        x_dict = {
+                            class_left: self.left_emb(data[class_left].node_id),
+                            class_right: self.right_lin(data[class_right].x) + self.right_emb(data[class_right].node_id),
+                        }
+                    elif not hasattr(data[class_right], 'x') or data[class_right].x == None:
+                        x_dict = {
+                            class_left: self.left_lin(data[class_left].x) + self.left_emb(data[class_left].node_id),
+                            class_right: self.right_emb(data[class_right].node_id),
+                        }
+                    else:
+                        x_dict = {
+                            class_left: self.left_lin(data[class_left].x) + self.left_emb(data[class_left].node_id),
+                            class_right: self.right_lin(data[class_right].x) + self.right_emb(data[class_right].node_id),
+                        }
+                    
                     # `x_dict` holds feature matrices of all node types
                     # `edge_index_dict` holds all edge indices of all edge types
                     x_dict = self.gnn(x_dict, data.edge_index_dict)
@@ -275,7 +286,7 @@ with open(parameters_for_view) as json_data:
 
             for epoch in range(1, int(EPOCHS)):
                 total_loss = total_examples = 0
-                for _, sampled_data in enumerate(train_loader):
+                for sampled_data in tqdm.tqdm(train_loader):
                     optimizer.zero_grad()
 
                     sampled_data.to(device)
