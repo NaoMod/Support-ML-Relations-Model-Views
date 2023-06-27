@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 public class UserMovies {
-	
+
 	/**
 	 * Basic EObject generator based on the package and name
 	 * 
@@ -29,16 +29,17 @@ public class UserMovies {
 	}
 
 	/**
-	 * Create an object Movie of the package uri and set the requested values, returning the object
+	 * Create an object Movie of the package uri and set the requested values,
+	 * returning the object
 	 * 
 	 * @return
 	 */
 	public static EObject createObjectTypeMovie(String uri, int id, String title, String genres) {
 
 		EObject objMovie = createEObject(uri, "Movie");
-		
+
 		EStructuralFeature idFeature = objMovie.eClass().getEStructuralFeature("id");
-		
+
 		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
 			objMovie.eSet(idFeature, id);
 		}
@@ -48,25 +49,39 @@ public class UserMovies {
 			objMovie.eSet(titleFeature, title);
 		}
 
-		EStructuralFeature genresFeature = objMovie.eClass().getEStructuralFeature("genres");
-		if (genresFeature != null && genresFeature.getEType() == EcorePackage.Literals.ESTRING) {
-			objMovie.eSet(genresFeature, genres);
-		}
-
 		return objMovie;
 	}
 
+	public static EObject createObjectTypeGenre(String uri, Integer id, String genre) {
+		
+		EObject objGenre = createEObject(uri, "Genre");
+
+		EStructuralFeature idFeature = objGenre.eClass().getEStructuralFeature("id");
+
+		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
+			objGenre.eSet(idFeature, id);
+		}
+
+		EStructuralFeature valueFeature = objGenre.eClass().getEStructuralFeature("value");
+		if (valueFeature != null && valueFeature.getEType() == EcorePackage.Literals.ESTRING) {
+			objGenre.eSet(valueFeature, genre);
+		}
+
+		return objGenre;
+	}
+
 	/**
-	 * Create an object User of the package uri and set the requested values, returning the object
+	 * Create an object User of the package uri and set the requested values,
+	 * returning the object
 	 * 
 	 * @return
 	 */
 	public static EObject createObjectTypeUser(String uri, Integer userID, String name) {
-		
+
 		EObject objUser = createEObject(uri, "User");
-		
+
 		EStructuralFeature idFeature = objUser.eClass().getEStructuralFeature("id");
-		
+
 		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
 			objUser.eSet(idFeature, userID);
 		}
@@ -81,30 +96,29 @@ public class UserMovies {
 
 	public static EObject findObjectType(Resource model, String className, Integer identifier) {
 		List<EObject> elements = model.getContents();
-		
+
 		for (Iterator<EObject> iter = elements.iterator(); iter.hasNext();) {
 			EObject element = iter.next();
 			EClass modelClass = element.eClass();
-			
-			
+
 			if (modelClass.getName().equals(className)) {
 				for (Iterator<EAttribute> iterAttr = modelClass.getEAllAttributes().iterator(); iterAttr.hasNext();) {
 					EAttribute elementAttribute = (EAttribute) iterAttr.next();
 					String attrName = elementAttribute.getName();
-					
+
 					if (attrName.equals("id")) {
 						Object elementAttributeValue = element.eGet(elementAttribute);
-						
+
 						if (elementAttributeValue.equals(identifier)) {
 							return element;
 						}
-					}				
+					}
 				}
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Create a link between User and Movie using rate relation
 	 * 
@@ -116,11 +130,32 @@ public class UserMovies {
 		List<EReference> eReferences = user.eClass().getEReferences();
 		for (Iterator<EReference> iter = eReferences.iterator(); iter.hasNext();) {
 			EReference ref = (EReference) iter.next();
-			if(ref.getName().equals("rate")) {
+			if (ref.getName().equals("movies")) {
 				if (ref.isChangeable()) {
 					@SuppressWarnings("unchecked")
 					EList<EObject> rates = (EList<EObject>) user.eGet(ref);
-		            rates.add(movie);
+					rates.add(movie);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a link between Movie and genre using genres relation
+	 * 
+	 * @param movie
+	 * @param genre
+	 */
+	public static void createGenreRelation(EObject movie, EObject genre) {
+
+		List<EReference> eReferences = movie.eClass().getEReferences();
+		for (Iterator<EReference> iter = eReferences.iterator(); iter.hasNext();) {
+			EReference ref = (EReference) iter.next();
+			if (ref.getName().equals("genres")) {
+				if (ref.isChangeable()) {
+					@SuppressWarnings("unchecked")
+					EList<EObject> genres = (EList<EObject>) movie.eGet(ref);
+					genres.add(genre);
 				}
 			}
 		}

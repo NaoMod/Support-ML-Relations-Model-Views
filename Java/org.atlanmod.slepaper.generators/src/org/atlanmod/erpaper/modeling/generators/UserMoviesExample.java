@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,8 @@ public class UserMoviesExample {
 
 		String pathToCsvMovies = here + "/ml-latest-small/movies.csv";
 		BufferedReader csvReaderMovie = new BufferedReader(new FileReader(pathToCsvMovies));
+		
+		Map<String, Integer> uniqueGenres = new HashMap<String, Integer>();
 
 		CSVParser parser = CSVParser.parse(csvReaderMovie, CSVFormat.RFC4180);
 		for (CSVRecord csvRecord : parser) {
@@ -66,9 +69,32 @@ public class UserMoviesExample {
 				String title = csvRecord.get(1);
 				String genres = csvRecord.get(2);
 
-				EObject objectMovie = UserMovies.createObjectTypeMovie("http://usermovies", movieID, title, genres);
-
+				EObject objectMovie = UserMovies.createObjectTypeMovie("http://paper/movies", movieID, title, genres);
+				
 				model.getContents().add(objectMovie);
+				
+				String [] genresSplit = genres.split("\\|");
+				for (String genre : genresSplit) {
+					
+					EObject objectGenre;
+					if (!uniqueGenres.containsKey(genre)) {
+						
+						Integer id = RandomGen.generateID();
+	
+						objectGenre = UserMovies.createObjectTypeGenre("http://paper/movies", id, genre);
+		
+						model.getContents().add(objectGenre);
+						uniqueGenres.put(genre, id);
+					} else {
+						Integer id = uniqueGenres.get(genre);
+						objectGenre = UserMovies.findObjectType(model, "Genre", id);
+					}
+					
+					//create the rate relation
+					UserMovies.createGenreRelation(objectMovie, objectGenre);
+				}
+
+				
 			} catch (NumberFormatException e) {
 				continue;
 			}
@@ -87,7 +113,7 @@ public class UserMoviesExample {
 				if (!uniqueUsers.contains(userID)) {
 					String name = itNames.next();
 	
-					objectUser = UserMovies.createObjectTypeUser("http://usermovies", userID, name);
+					objectUser = UserMovies.createObjectTypeUser("http://paper/users", userID, name);
 	
 					model.getContents().add(objectUser);
 					uniqueUsers.add(userID);
@@ -95,7 +121,7 @@ public class UserMoviesExample {
 					objectUser = UserMovies.findObjectType(model, "User", userID);
 				}
 				EObject objectMovie = UserMovies.findObjectType(model, "Movie", movieID);
-				//create the rate relation
+				//create the movies relation
 				UserMovies.createRelation(objectUser, objectMovie);
 			} catch (NumberFormatException e) {
 				continue;
@@ -123,10 +149,24 @@ public class UserMoviesExample {
 
 		// Create EMF Resources and register metamodels used in the example
 		ResourceSet rs = new ResourceSetImpl();
+		
+
 		EPackage UserMoviesPkg = (EPackage) rs
 				.getResource(resourceURI("/../../Modeling_Resources/metamodels/UserMovies.ecore"), true).getContents()
 				.get(0);
 		EPackage.Registry.INSTANCE.put(UserMoviesPkg.getNsURI(), UserMoviesPkg);
+		
+		//register inner packages
+		List<EObject> contents = UserMoviesPkg.eContents();
+
+		// Iterate through the contents to find the packages
+		for (EObject content : contents) {
+		  if (content instanceof EPackage) {
+		    EPackage pkg = (EPackage) content;
+		    
+		    EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
+		  }
+		}
 
 		// Create Sets of strings to be used as user names in the generated models
 		Set<String> stringsList = RandomGen.createRandomStrings(700);
