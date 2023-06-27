@@ -1,10 +1,9 @@
 create view recommended as
 
-select Users.User.ID,
-	   Movies.Movie.*,
-	   Users.User join Movies.Movie  as rate
+select UsersMovies.User.id,
+	   UsersMovies.Movie.*,
+	   UsersMovies.User join UsersMovies.Movie  as recommend
 
-from 'http://users' as Users,
-	 'http://movies' as Movies,
-	 
-where 	"{User.ID}<~>{Movie.Genres}" for rate
+from 'http://usermovies' as UsersMovies,
+	  
+where 	"{User.id}<~>{Movie.genres}" for recommend

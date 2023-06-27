@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Model" nsURI="http://paper" nsPrefix="Paper">
+  <eSubpackages name="Movies" nsURI="http://paper/movies" nsPrefix="Movies">
+    <eClassifiers xsi:type="ecore:EClass" name="Movie">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tags" upperBound="-1"
+          eType="#//Movies/Tag"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="users" unique="false"
+          upperBound="-1" eType="#//Users/User" eOpposite="#//Users/User/movies"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="genres" unique="false"
+          lowerBound="1" upperBound="-1" eType="#//Movies/Genre"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Tag">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Genre">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="Users" nsURI="http://paper/users" nsPrefix="Users">
+    <eClassifiers xsi:type="ecore:EClass" name="User">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="age" ordered="false"
+          unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="occupation" eType="#//Users/Occupation"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Users/ZipCode"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="movies" unique="false"
+          upperBound="-1" eType="#//Movies/Movie" eOpposite="#//Movies/Movie/users"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Occupation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ZipCode">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

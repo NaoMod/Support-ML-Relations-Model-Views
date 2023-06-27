@@ -32,7 +32,7 @@ public class UserMoviesExample {
 	}
 
 	/**
-	 * Method to generate two models copying the values from the ml-latest-small
+	 * Method to generate the model copying the values from the ml-latest-small
 	 * movielens dataset
 	 * 
 	 * 
@@ -48,17 +48,13 @@ public class UserMoviesExample {
 		ResourceSet rSet = new ResourceSetImpl();
 		rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
-		Resource modelUsers = null;
-		URI uriUsers;
-		Resource modelMovies = null;
-		URI uriMovies;
+		Resource model = null;
+		URI uriModel;
 
 		Iterator<String> itNames = names.iterator();
 
-		uriUsers = resourceURI("/../../Modeling_Resources/models/Example/" + directory + "/Users.xmi");
-		modelUsers = rSet.createResource(uriUsers);
-		uriMovies = resourceURI("/../../Modeling_Resources/models/Example/" + directory + "/Movies.xmi");
-		modelMovies = rSet.createResource(uriMovies);
+		uriModel = resourceURI("/../../Modeling_Resources/models/Example/" + directory + "/UsersMovies.xmi");
+		model = rSet.createResource(uriModel);
 
 		String pathToCsvMovies = here + "/ml-latest-small/movies.csv";
 		BufferedReader csvReaderMovie = new BufferedReader(new FileReader(pathToCsvMovies));
@@ -70,9 +66,9 @@ public class UserMoviesExample {
 				String title = csvRecord.get(1);
 				String genres = csvRecord.get(2);
 
-				EObject objectMovie = UserMovies.createObjectTypeMovie("http://movies", movieID, title, genres);
+				EObject objectMovie = UserMovies.createObjectTypeMovie("http://usermovies", movieID, title, genres);
 
-				modelMovies.getContents().add(objectMovie);
+				model.getContents().add(objectMovie);
 			} catch (NumberFormatException e) {
 				continue;
 			}
@@ -86,14 +82,21 @@ public class UserMoviesExample {
 		for (CSVRecord csvRecord : parserUsers) {
 			try {
 				Integer userID = Integer.parseInt(csvRecord.get(0));
+				Integer movieID = Integer.parseInt(csvRecord.get(1));
+				EObject objectUser;
 				if (!uniqueUsers.contains(userID)) {
 					String name = itNames.next();
 	
-					EObject objectUser = UserMovies.createObjectTypeUser("http://users", userID, name);
+					objectUser = UserMovies.createObjectTypeUser("http://usermovies", userID, name);
 	
-					modelUsers.getContents().add(objectUser);
+					model.getContents().add(objectUser);
 					uniqueUsers.add(userID);
+				} else {
+					objectUser = UserMovies.findObjectType(model, "User", userID);
 				}
+				EObject objectMovie = UserMovies.findObjectType(model, "Movie", movieID);
+				//create the rate relation
+				UserMovies.createRelation(objectUser, objectMovie);
 			} catch (NumberFormatException e) {
 				continue;
 			}
@@ -101,8 +104,7 @@ public class UserMoviesExample {
 
 		// serialize
 		try {
-			modelMovies.save(null);
-			modelUsers.save(null);
+			model.save(null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -121,19 +123,15 @@ public class UserMoviesExample {
 
 		// Create EMF Resources and register metamodels used in the example
 		ResourceSet rs = new ResourceSetImpl();
-		EPackage UsersPkg = (EPackage) rs
-				.getResource(resourceURI("/../../Modeling_Resources/metamodels/Users.ecore"), true).getContents()
+		EPackage UserMoviesPkg = (EPackage) rs
+				.getResource(resourceURI("/../../Modeling_Resources/metamodels/UserMovies.ecore"), true).getContents()
 				.get(0);
-		EPackage.Registry.INSTANCE.put(UsersPkg.getNsURI(), UsersPkg);
-		EPackage MoviesPkg = (EPackage) rs
-				.getResource(resourceURI("/../../Modeling_Resources/metamodels/Movies.ecore"), true).getContents()
-				.get(0);
-		EPackage.Registry.INSTANCE.put(MoviesPkg.getNsURI(), MoviesPkg);
+		EPackage.Registry.INSTANCE.put(UserMoviesPkg.getNsURI(), UserMoviesPkg);
 
 		// Create Sets of strings to be used as user names in the generated models
 		Set<String> stringsList = RandomGen.createRandomStrings(700);
 
-		// Generate the dataset as XMI files and CSV relation into Data/AB directory
+		// Generate the dataset as XMI files
 		generateDataset("MovieLens", stringsList);
 	}
 }
