@@ -7,8 +7,8 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="tags" upperBound="-1"
           eType="#//Movies/Tag"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="users" upperBound="-1"
-          eType="#//Users/User" eOpposite="#//Users/User/movies"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="users" unique="false"
+          upperBound="-1" eType="#//Users/User" eOpposite="#//Users/User/movies"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="genres" unique="false"
           lowerBound="1" upperBound="-1" eType="#//Movies/Genre"/>
     </eClassifiers>
@@ -29,8 +29,8 @@
           unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="occupation" eType="#//Users/Occupation"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Users/ZipCode"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="movies" upperBound="-1"
-          eType="#//Movies/Movie" eOpposite="#//Movies/Movie/users"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="movies" unique="false"
+          upperBound="-1" eType="#//Movies/Movie" eOpposite="#//Movies/Movie/users"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Occupation">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

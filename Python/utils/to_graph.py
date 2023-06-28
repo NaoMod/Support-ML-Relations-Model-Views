@@ -38,6 +38,7 @@ class ToGraph():
                         Left_wrapper[attributeName].append(element.eGet(attribute))      
 
         attributes_right_class = [s.split(".",1)[1] for s in self.features_for_embedding_right if s.count(".") == 1]
+        sub_right_class = [s.split("->",1)[1] for s in self.features_for_embedding_right if s.count("->") == 1]
         unique_id_right = None
         for element in model_root_right:
             className = element.eClass.name
@@ -51,6 +52,20 @@ class ToGraph():
                         if attributeName not in Right_wrapper:
                             Right_wrapper[attributeName] = []
                         Right_wrapper[attributeName].append(element.eGet(attribute))
+                for sub_class in sub_right_class:
+                    sub_class_name, attributes_sub_class = sub_class.split(".")
+                    values = ""
+                    for sub_class_instance in element.eGet(sub_class_name):
+                        for attribute in sub_class_instance.eClass.eAttributes:
+                            attributeName = attribute.name
+                            if  self.features_for_embedding_right is not None and (attributeName in attributes_sub_class):
+                                if values == "":
+                                    values = sub_class_instance.eGet(attribute)
+                                else:
+                                    values += "|" + sub_class_instance.eGet(attribute)
+                    if sub_class_name not in Right_wrapper:
+                        Right_wrapper[sub_class_name] = []
+                    Right_wrapper[sub_class_name].append(values)
                 
         df_left = pd.DataFrame(Left_wrapper)
         df_right = pd.DataFrame(Right_wrapper)

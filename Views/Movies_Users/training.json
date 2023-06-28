@@ -1,5 +1,5 @@
 {
-	"rate": {		
+	"recommend": {		
 		"ARCHITECTURE": {
 			"OPERATOR" : "SAGEConv",
 			"CONVOLUTIONS" : 2,
@@ -12,8 +12,8 @@
 			"LEARNING_RATE": 0.001,
 			"ADD_NEGATIVE_TRAINING": false,
 			"NEG_SAMPLING_RATIO": 2.0,
-			"LEFT_PATH":"models/Example/MovieLens/Users.xmi",
-			"RIGHT_PATH": "models/Example/MovieLens/Movies.xmi",
+			"LEFT_PATH":"models/Example/MovieLens/UsersMovies.xmi",
+			"RIGHT_PATH": "models/Example/MovieLens/UsersMovies.xmi",
 			"LINK_PATH": "models/Example/MovieLens/Relations.csv"
 		},
 		"EMBEDDINGS": {
