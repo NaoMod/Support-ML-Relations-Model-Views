@@ -52,20 +52,22 @@ class ToGraph():
                         if attributeName not in Right_wrapper:
                             Right_wrapper[attributeName] = []
                         Right_wrapper[attributeName].append(element.eGet(attribute))
-                for sub_class in sub_right_class:
-                    sub_class_name, attributes_sub_class = sub_class.split(".")
-                    values = ""
-                    for sub_class_instance in element.eGet(sub_class_name):
-                        for attribute in sub_class_instance.eClass.eAttributes:
-                            attributeName = attribute.name
-                            if  self.features_for_embedding_right is not None and (attributeName in attributes_sub_class):
-                                if values == "":
-                                    values = sub_class_instance.eGet(attribute)
-                                else:
-                                    values += "|" + sub_class_instance.eGet(attribute)
-                    if sub_class_name not in Right_wrapper:
-                        Right_wrapper[sub_class_name] = []
-                    Right_wrapper[sub_class_name].append(values)
+                #TODO: Too much specific for the example
+                sub_class_name, attributes_sub_class = sub_right_class[0].split(".")
+                values = ""
+                for sub_class_instance in element.eGet(sub_class_name):
+                    for attribute in sub_class_instance.eClass.eAttributes:
+                        attributeName = attribute.name
+                        if  self.features_for_embedding_right is not None and (attributeName in attributes_sub_class):
+                            if values == "":
+                                values = sub_class_instance.eGet(attribute)
+                            else:
+                                values += "|" + sub_class_instance.eGet(attribute)
+                if sub_right_class[0] not in attributes_right_class:
+                    attributes_right_class.append(sub_right_class[0])
+                if sub_right_class[0] not in Right_wrapper:
+                    Right_wrapper[sub_right_class[0]] = []
+                Right_wrapper[sub_right_class[0]].append(values)
                 
         df_left = pd.DataFrame(Left_wrapper)
         df_right = pd.DataFrame(Right_wrapper)

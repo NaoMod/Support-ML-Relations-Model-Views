@@ -17,8 +17,8 @@
 			"LINK_PATH": "models/Example/MovieLens/Relations.csv"
 		},
 		"EMBEDDINGS": {
-			"User.ID": "id",
-			"Movie.Genres": "enum"   	
+			"User.id": "id",
+			"genres.value": "enum"   	
 		}		
     }
 }

@@ -17,7 +17,7 @@ def print_pr_curve(precision, recall, title, pr_auc, no_skill, display = False):
         plt.show
     else:
         #save plot in a file
-        plt.savefig("PR_" + title + '.png')
+        plt.savefig("PR_" + title + '.pdf')
 
 
 def print_roc_curve(fpr, tpr, title, roc_auc, display = False):
@@ -37,4 +37,4 @@ def print_roc_curve(fpr, tpr, title, roc_auc, display = False):
         plt.show
     else:
         #save plot in a file
-        plt.savefig("ROC_" + title + '.png')
+        plt.savefig("ROC_" + title + '.pdf')
