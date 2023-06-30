@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.generators.helpers;
+package org.atlanmod.slepaper.modeling.generators.helpers;
 
 import java.util.Iterator;
 import java.util.List;

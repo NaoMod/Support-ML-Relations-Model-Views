@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.generators;
+package org.atlanmod.slepaper.modeling.generators;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +14,8 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.atlanmod.erpaper.modeling.generators.helpers.RandomGen;
-import org.atlanmod.erpaper.modeling.generators.helpers.UserMovies;
+import org.atlanmod.slepaper.modeling.generators.helpers.RandomGen;
+import org.atlanmod.slepaper.modeling.generators.helpers.UserMovies;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;

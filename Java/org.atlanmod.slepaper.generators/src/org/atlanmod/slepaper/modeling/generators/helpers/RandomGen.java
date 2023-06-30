@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.generators.helpers;
+package org.atlanmod.slepaper.modeling.generators.helpers;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;

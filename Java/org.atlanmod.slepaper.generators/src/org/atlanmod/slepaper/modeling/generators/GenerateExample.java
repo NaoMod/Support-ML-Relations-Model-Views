@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.generators;
+package org.atlanmod.slepaper.modeling.generators;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.atlanmod.erpaper.modeling.generators.helpers.HelperModeling;
-import org.atlanmod.erpaper.modeling.generators.helpers.RandomGen;
+import org.atlanmod.slepaper.modeling.generators.helpers.HelperModeling;
+import org.atlanmod.slepaper.modeling.generators.helpers.RandomGen;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;

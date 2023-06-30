@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.generators;
+package org.atlanmod.slepaper.modeling.generators;
 
 import java.io.File;
 import java.io.FileReader;

@@ -2,9 +2,12 @@ create view recommended as
 
 select Users.User.id,
 	   Movies.Movie.*,
-	   Users.User join Movies.Movie  as recommend
+	   Users.User join Movies.Movie  
+	   as recommend
 
 from 'http://paper/movies' as Movies,
 	 'http://paper/users' as Users
 	  
 where 	"{User.id}<~>{Movie->genres.value}" for recommend
+
+
