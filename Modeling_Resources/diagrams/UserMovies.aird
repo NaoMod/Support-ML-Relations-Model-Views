@@ -4,7 +4,7 @@
     <semanticResources>../metamodels/UserMovies.ecore</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_S4pU0BS_Ee6Riuy-kt1_bQ">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_XDeEkBTBEe6Riuy-kt1_bQ" name="UserMovies class diagram" repPath="#_XDddgBTBEe6Riuy-kt1_bQ" changeId="c1aa799b-3d45-4d28-a576-a0ce522441bd">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_XDeEkBTBEe6Riuy-kt1_bQ" name="UserMovies class diagram" repPath="#_XDddgBTBEe6Riuy-kt1_bQ" changeId="d16918fd-03a4-4781-9403-0b5b57e1cd37">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="../metamodels/UserMovies.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -229,6 +229,21 @@
             <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
           </endLabelStyleDescription>
         </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:FlatContainerStyleDescription" xmi:id="_TUWHoBdXEe6mtadobxSCOg" arcWidth="8" arcHeight="8" borderSizeComputationExpression="1" tooltipExpression="service:renderTooltip" roundedCorner="true" widthComputationExpression="12" heightComputationExpression="10" backgroundStyle="Liquid">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          <backgroundColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+          <foregroundColor xmi:type="description:UserFixedColor" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@userColorsPalettes[name='Ecore%20Palette']/@entries[name='EClass']"/>
+        </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:EdgeStyleDescription" xmi:id="_TUlYMBdXEe6mtadobxSCOg" sourceArrow="InputArrow" routingStyle="manhattan">
+          <strokeColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          <beginLabelStyleDescription xmi:type="style:BeginLabelStyleDescription" xmi:id="_TUlYMRdXEe6mtadobxSCOg" showIcon="false" labelExpression="service:renderEOpposite">
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          </beginLabelStyleDescription>
+          <endLabelStyleDescription xmi:type="style:EndLabelStyleDescription" xmi:id="_TUlYMhdXEe6mtadobxSCOg" showIcon="false" labelExpression="service:render">
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          </endLabelStyleDescription>
+        </computedStyleDescriptions>
       </data>
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" uid="_XpwBcBTBEe6Riuy-kt1_bQ" name="Movies" width="24" height="16">
@@ -241,15 +256,13 @@
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']/@containerMappings[name='Dropped%20Package']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']/@containerMappings[name='Dropped%20Package']"/>
-      <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_zfCtUBTBEe6Riuy-kt1_bQ" name="Movie" tooltipText="" outgoingEdges="_0A-8zBTBEe6Riuy-kt1_bQ __50L_xTBEe6Riuy-kt1_bQ _GEwO0hTDEe6Riuy-kt1_bQ" width="12" height="10">
+      <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_zfCtUBTBEe6Riuy-kt1_bQ" name="Movie" tooltipText="&#xA;ERROR : A containment or bidirectional reference must be unique if its upper bound is different from 1" outgoingEdges="_0A-8zBTBEe6Riuy-kt1_bQ __50L_xTBEe6Riuy-kt1_bQ _GEwO0hTDEe6Riuy-kt1_bQ" width="12" height="10">
         <target xmi:type="ecore:EClass" href="../metamodels/UserMovies.ecore#//Movies/Movie"/>
         <semanticElements xmi:type="ecore:EClass" href="../metamodels/UserMovies.ecore#//Movies/Movie"/>
         <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
         <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
         <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
-        <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_RXpC1RTEEe6Riuy-kt1_bQ" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
-          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
-        </ownedStyle>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_TUWusRdXEe6mtadobxSCOg" labelColor="239,41,41" description="_TUWHoBdXEe6mtadobxSCOg" borderSize="1" borderSizeComputationExpression="1" borderColor="239,41,41" backgroundStyle="Liquid" foregroundColor="255,252,216"/>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
         <ownedElements xmi:type="diagram:DNodeListElement" uid="_zfFJlBTBEe6Riuy-kt1_bQ" name="id : EInt" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="../metamodels/UserMovies.ecore#//Movies/Movie/id"/>
@@ -325,15 +338,13 @@
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']/@containerMappings[name='Dropped%20Package']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']/@containerMappings[name='Dropped%20Package']"/>
-      <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_bNZHUBTBEe6Riuy-kt1_bQ" name="User" tooltipText="" outgoingEdges="_gUj1cRTBEe6Riuy-kt1_bQ _kftnQBTBEe6Riuy-kt1_bQ" incomingEdges="_0A-8zBTBEe6Riuy-kt1_bQ" width="12" height="10">
+      <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_bNZHUBTBEe6Riuy-kt1_bQ" name="User" tooltipText="&#xA;ERROR : A containment or bidirectional reference must be unique if its upper bound is different from 1" outgoingEdges="_gUj1cRTBEe6Riuy-kt1_bQ _kftnQBTBEe6Riuy-kt1_bQ" incomingEdges="_0A-8zBTBEe6Riuy-kt1_bQ" width="12" height="10">
         <target xmi:type="ecore:EClass" href="../metamodels/UserMovies.ecore#//Users/User"/>
         <semanticElements xmi:type="ecore:EClass" href="../metamodels/UserMovies.ecore#//Users/User"/>
         <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
         <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
         <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
-        <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_8N2wNBTEEe6Riuy-kt1_bQ" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
-          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
-        </ownedStyle>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_TUaZERdXEe6mtadobxSCOg" labelColor="239,41,41" description="_TUWHoBdXEe6mtadobxSCOg" borderSize="1" borderSizeComputationExpression="1" borderColor="239,41,41" backgroundStyle="Liquid" foregroundColor="255,252,216"/>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
         <ownedElements xmi:type="diagram:DNodeListElement" uid="_bNbjkhTBEe6Riuy-kt1_bQ" name="id : EInt" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="../metamodels/UserMovies.ecore#//Users/User/id"/>
@@ -431,10 +442,9 @@
       <target xmi:type="ecore:EReference" href="../metamodels/UserMovies.ecore#//Movies/Movie/users"/>
       <semanticElements xmi:type="ecore:EReference" href="../metamodels/UserMovies.ecore#//Users/User/movies"/>
       <semanticElements xmi:type="ecore:EReference" href="../metamodels/UserMovies.ecore#//Movies/Movie/users"/>
-      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_RXq4EhTEEe6Riuy-kt1_bQ" sourceArrow="InputArrow" routingStyle="manhattan" strokeColor="0,0,0">
-        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='Bi-directional%20EC_EReference%20']/@style"/>
-        <beginLabelStyle xmi:type="diagram:BeginLabelStyle" uid="_RXq4ExTEEe6Riuy-kt1_bQ" showIcon="false"/>
-        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_RXq4FBTEEe6Riuy-kt1_bQ" showIcon="false"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_TUmmUBdXEe6mtadobxSCOg" description="_TUlYMBdXEe6mtadobxSCOg" sourceArrow="InputArrow" routingStyle="manhattan" strokeColor="239,41,41">
+        <beginLabelStyle xmi:type="diagram:BeginLabelStyle" uid="_TUmmURdXEe6mtadobxSCOg" showIcon="false"/>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_TUmmUhdXEe6mtadobxSCOg" showIcon="false"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='Bi-directional%20EC_EReference%20']"/>
     </ownedDiagramElements>
