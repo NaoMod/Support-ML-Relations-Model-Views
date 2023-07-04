@@ -11,3 +11,11 @@ from 'http://paper/movies' as Movies,
 where 	"{User.id}<~>{Movie->genres.value}" for recommend
 
 
+
+
+
+
+
+//last element is value and intermediate are references
+
+

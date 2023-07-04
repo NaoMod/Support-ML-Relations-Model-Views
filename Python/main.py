@@ -355,54 +355,64 @@ with open(parameters_for_view) as json_data:
             roc_auc = area_curve(fpr, tpr)
             print("Area under the ROC curve : %f" % roc_auc)
 
+            from sklearn.metrics import confusion_matrix
+            threshold = 0.5  # Adjust threshold as needed
+            pred_labels = np.where(pred >= threshold, 1, 0)
+            confusion = confusion_matrix(ground_truth, pred_labels)
+            print("Confusion Matrix:")
+            print("                  Predicted Negative   Predicted Positive")
+            print("Actual Negative         TN                   FP")
+            print("Actual Positive         FN                   TP")
+            print(confusion)
+
             ####################################
             # The optimal cut off would be where tpr is high and fpr is low
             # tpr - (1-fpr) is zero or near to zero is the optimal cut off point
             ####################################
             #TODO: Check again this method
-            i = np.arange(len(tpr)) # index for df
-            roc = pd.DataFrame({
-                'fpr' : pd.Series(fpr, index=i),
-                'tpr' : pd.Series(tpr, index = i), 
-                '1-fpr' : pd.Series(1-fpr, index = i), 
-                'tf' : pd.Series(tpr - fpr, index = i), 
-                'thresholds' : pd.Series(roc_tr, index = i)})
+            # i = np.arange(len(tpr)) # index for df
+            # roc = pd.DataFrame({
+            #     'fpr' : pd.Series(fpr, index=i),
+            #     'tpr' : pd.Series(tpr, index = i), 
+            #     '1-fpr' : pd.Series(1-fpr, index = i), 
+            #     'tf' : pd.Series(tpr - fpr, index = i), 
+            #     'thresholds' : pd.Series(roc_tr, index = i)})
             
-            model = model.cpu()
-            model.eval() 
+            # model = model.cpu()
+            # model.eval() 
 
-            total_class_left = len(left_original_mapping) 
-            total_class_right = len(right_original_mapping)
+            # total_class_left = len(left_original_mapping) 
+            # total_class_right = len(right_original_mapping)
 
-            threshold = roc.iloc[(roc.tf-0).abs().argsort()[:1]]['thresholds']
-            predictions = {}
+            # threshold = roc.iloc[(roc.tf-0).abs().argsort()[:1]]['thresholds']
+            # predictions = {}
 
-            for uri_idenifier_left, left_id in tqdm.tqdm(left_original_mapping.items()):
-                predictions[uri_idenifier_left] = []
+            # for uri_idenifier_left, left_id in tqdm.tqdm(left_original_mapping.items()):
+            #     predictions[uri_idenifier_left] = []
 
-                left_row = torch.tensor([left_id] * total_class_right) 
-                all_right_ids = torch.arange(total_class_right) 
-                edge_label_index = torch.stack([left_row, all_right_ids], dim=0) 
-                data[class_left, relation_name, class_right].edge_label_index = edge_label_index
+            #     left_row = torch.tensor([left_id] * total_class_right) 
+            #     all_right_ids = torch.arange(total_class_right) 
+            #     edge_label_index = torch.stack([left_row, all_right_ids], dim=0) 
+            #     data[class_left, relation_name, class_right].edge_label_index = edge_label_index
                 
-                with torch.no_grad(): 
-                    pred = model(data)
-                # cut off by threshold
-                optimal_pred = (pred > threshold[0]).long()
-                probabilities = torch.sigmoid(pred)
-                pred_labels = (probabilities > threshold[0]).long()
+            #     with torch.no_grad(): 
+            #         pred = model(data)
+            #     # cut off by threshold
+            #     optimal_pred = (pred > threshold[0]).long()
+            #     probabilities = torch.sigmoid(pred)
+            #     pred_labels = (probabilities > threshold[0]).long()
 
-                recommended_links = all_right_ids[pred_labels == 1].tolist()
+            #     recommended_links = all_right_ids[pred_labels == 1].tolist()
 
-                predictions[uri_idenifier_left] = recommended_links
+            #     predictions[uri_idenifier_left] = recommended_links
 
-                predicted_path = osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, "recommendations.json")
+            #     predicted_path = osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, "recommendations.json")
 
-                inv_right_mapping = {v: k for k, v in right_original_mapping.items()}
-                json_dict = {}
-                #iterate over the predictions and create the JSON
-                for uri_idenifier_left, potential_links in predictions.items():
-                    json_dict[uri_idenifier_left] = [inv_right_mapping[x] for x in potential_links]
+            #     inv_right_mapping = {v: k for k, v in right_original_mapping.items()}
+            #     json_dict = {}
+            #     #iterate over the predictions and create the JSON
+            #     for uri_idenifier_left, potential_links in predictions.items():
+            #         json_dict[uri_idenifier_left] = [inv_right_mapping[x] for x in potential_links]
 
-                with open(predicted_path, 'w+') as f:
-                    json.dump(json_dict, f)
+            #     with open(predicted_path, 'w+') as f:
+            #         json.dump(json_dict, f)
