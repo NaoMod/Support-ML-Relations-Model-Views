@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class HelperModeling {
 	
@@ -65,10 +67,10 @@ public class HelperModeling {
 	 * @param objA
 	 * @param randomAttr
 	 */
-	private static void setAAttr(EObject objA, int ID, float randomAttr, String randomAttrS) {
-		EStructuralFeature idFeature = objA.eClass().getEStructuralFeature("ID");
+	private static void setAAttr(EObject objA, int id, float randomAttr, String randomAttrS) {
+		EStructuralFeature idFeature = objA.eClass().getEStructuralFeature("id");
 		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
-			objA.eSet(idFeature, ID);
+			objA.eSet(idFeature, id);
 		}
 
 		EStructuralFeature aFeature = objA.eClass().getEStructuralFeature("a");
@@ -171,11 +173,11 @@ public class HelperModeling {
 	 * @param randomAttrC
 	 * @param randomAttrD
 	 */
-	private static void setBAttr(EObject objB, int ID, float randomAttrB, float randomAttrC, float randomAttrD,
+	private static void setBAttr(EObject objB, int id, float randomAttrB, float randomAttrC, float randomAttrD,
 			String randomAttrS) {
-		EStructuralFeature idFeature = objB.eClass().getEStructuralFeature("ID");
+		EStructuralFeature idFeature = objB.eClass().getEStructuralFeature("id");
 		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
-			objB.eSet(idFeature, ID);
+			objB.eSet(idFeature, id);
 		}
 
 		EStructuralFeature bFeature = objB.eClass().getEStructuralFeature("b");
@@ -207,10 +209,10 @@ public class HelperModeling {
 	 * @param randomAttrC
 	 * @param randomAttrD
 	 */
-	private static void setBNAttr(EObject objBN, int ID, List<String> randomAttrType) {
-		EStructuralFeature idFeature = objBN.eClass().getEStructuralFeature("ID");
+	private static void setBNAttr(EObject objBN, int id, List<String> randomAttrType) {
+		EStructuralFeature idFeature = objBN.eClass().getEStructuralFeature("id");
 		if (idFeature != null && idFeature.getEType() == EcorePackage.Literals.EINT) {
-			objBN.eSet(idFeature, ID);
+			objBN.eSet(idFeature, id);
 		}
 
 		EStructuralFeature typeFeature = objBN.eClass().getEStructuralFeature("type");
@@ -258,8 +260,8 @@ public class HelperModeling {
             csvWriter.append("B_id");
             csvWriter.append("\n");
         }
-        EStructuralFeature aIdFeature = objA.eClass().getEStructuralFeature("ID");
-        EStructuralFeature bIdFeature = objB.eClass().getEStructuralFeature("ID");
+        EStructuralFeature aIdFeature = objA.eClass().getEStructuralFeature("id");
+        EStructuralFeature bIdFeature = objB.eClass().getEStructuralFeature("id");
 		if (aIdFeature != null && aIdFeature.getEType() == EcorePackage.Literals.EINT &&
 			bIdFeature != null && bIdFeature.getEType() == EcorePackage.Literals.EINT) {
 			csvWriter.append( objA.eGet(aIdFeature).toString());
@@ -303,5 +305,17 @@ public class HelperModeling {
         
         csvWriter.flush();
         csvWriter.close();
+	}
+
+	public static void updateAaValue(Resource modelA, Integer aId, float f) {
+		//find aId in modelA and update A.a value
+		
+		for (EObject object : modelA.getContents()) {	        
+            EObject a = object;
+            if (a.eGet(a.eClass().getEStructuralFeature("id")).equals(aId)) {
+                a.eSet(a.eClass().getEStructuralFeature("a"), f);
+                return;
+            }	        
+	    }
 	}
 }

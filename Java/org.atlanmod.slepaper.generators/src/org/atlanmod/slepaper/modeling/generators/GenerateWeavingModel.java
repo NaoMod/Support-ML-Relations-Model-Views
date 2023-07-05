@@ -167,11 +167,11 @@ public class GenerateWeavingModel {
 		for (Iterator<EObject> i = (Iterator<EObject>) myModel.getAllContents(); i.hasNext();) {
 		    EObject object = i.next();
 
-		    // Check if the object has the attribute you are looking for and if its value is equal to the specified value
+		    // Check if the object has the attribute
 		    //TODO: Replace ID by the attribute selected by the user
 		    EAttribute attribute = (EAttribute) object.eClass().getEStructuralFeature("ID");
 		    if (attribute != null && object.eGet(attribute).toString().equals(valueToSearch)) {
-		        // You have found the object you were looking for
+		        // found the object
 		    	return myModel.getURIFragment(object);
 		    }
 		}

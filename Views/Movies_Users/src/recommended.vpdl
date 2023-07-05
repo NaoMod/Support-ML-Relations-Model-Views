@@ -8,7 +8,7 @@ select Users.User.id,
 from 'http://paper/movies' as Movies,
 	 'http://paper/users' as Users
 	  
-where 	"{User.id}<~>{Movie->genres.value}" for recommend
+where 	"{User.id}<~>{Movie->.genres.value}" for recommend
 
 
 
