@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.utils;
+package org.atlanmod.slepaper.modeling.utils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.atlanmod.erpaper.modeling.utils;
+package org.atlanmod.slepaper.modeling.utils;
 
 import org.atlanmod.emfviews.core.ViewResource;
 import org.atlanmod.emfviews.core.ViewpointResource;
