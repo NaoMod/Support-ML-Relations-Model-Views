@@ -1,0 +1,24 @@
+{
+	"relates_with": {		
+		"ARCHITECTURE": {
+			"OPERATOR" : "SAGEConv",
+			"CONVOLUTIONS" : 2,
+			"ACTIVATION": "relu",
+			"HIDDEN_CHANNELS" : 64,
+			"CLASSIFIER": "dot_product"
+		},
+		"TRAINING_PARAMETERS": {
+			"EPOCHS": 2,
+			"LEARNING_RATE": 0.001,
+			"ADD_NEGATIVE_TRAINING": false,
+			"NEG_SAMPLING_RATIO": 2.0,
+			"LEFT_PATH":"models/Example/AB1/DatasetA.xmi",
+			"RIGHT_PATH": "models/Example/AB1/DatasetB.xmi",
+			"LINK_PATH": "models/Example/AB1/Relations.csv"
+		},
+		"EMBEDDINGS": {
+			"A.a": "number",
+			"B.b": "number"
+		}		
+    }
+}

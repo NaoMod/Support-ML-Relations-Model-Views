@@ -1,0 +1,10 @@
+create view recommended as
+
+select Left.A.*,
+	   Right.B.*,
+	   Left.A join Right.B  as relates_with
+
+from 'http://a_model' as Left,
+	 'http://b_model' as Right,
+	 
+where 	"{A.s}<~>{B.s}" for relates_with

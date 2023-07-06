@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.atlanmod.emfviews.core.Viewpoint;
 import org.atlanmod.emfviews.core.ViewpointResource;
 import org.atlanmod.emfviews.virtuallinks.VirtualLinksPackage;
-import org.atlanmod.erpaper.modeling.utils.EmfViewsFactory;
+import org.atlanmod.slepaper.modeling.utils.EmfViewsFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;

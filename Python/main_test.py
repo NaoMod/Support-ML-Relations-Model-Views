@@ -26,7 +26,7 @@ from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
 
 VIEWS_DIRECTORY = 'Views'
-VIEW_NAME = 'Movies_Users'
+VIEW_NAME = 'ViewAB3'
 
 # Read JSON files to get GNN properties
 json_path = glob.glob(osp.join(Path(__file__).parent, '..', VIEWS_DIRECTORY, VIEW_NAME, 'src-gen', "recommended.json"))[0]
@@ -71,26 +71,17 @@ with open(parameters_for_view) as json_data:
             modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..','Modeling_Resources'))[0]
 
             #TODO: Include as parameters in training
-            ecore_path_left = glob.glob(osp.join(modeling_resources_path, 'metamodels/UserMovies.ecore'))[0]
-            ecore_path_right =glob.glob(osp.join(modeling_resources_path, 'metamodels/UserMovies.ecore'))[0]
-
-            resource_path = resource_set.get_resource(URI(ecore_path_left))
-            root_pkg = resource_path.contents[0]
-            
-            contents = root_pkg.eContents
-
-            resource_set.metamodel_registry[contents[0].nsURI] = contents[0]
-            resource_set.metamodel_registry[contents[1].nsURI] = contents[1]
-	                
+            ecore_path_left = glob.glob(osp.join(modeling_resources_path, 'metamodels/Left.ecore'))[0]
+            ecore_path_right =glob.glob(osp.join(modeling_resources_path, 'metamodels/Right.ecore'))[0]              
                 
 
-            # resource_left = resource_set.get_resource(URI(ecore_path_left))
-            # mm_root_left = resource_left.contents[0]
-            # resource_right = resource_set.get_resource(URI(ecore_path_right))
-            # mm_root_right = resource_right.contents[0]
+            resource_left = resource_set.get_resource(URI(ecore_path_left))
+            mm_root_left = resource_left.contents[0]
+            resource_right = resource_set.get_resource(URI(ecore_path_right))
+            mm_root_right = resource_right.contents[0]
 
-            # resource_set.metamodel_registry[mm_root_left.nsURI] = mm_root_left
-            # resource_set.metamodel_registry[mm_root_right.nsURI] = mm_root_right
+            resource_set.metamodel_registry[mm_root_left.nsURI] = mm_root_left
+            resource_set.metamodel_registry[mm_root_right.nsURI] = mm_root_right
 
             #if EMBEDDINGS_LEFT is not None:
             features_for_embedding_left = relation_props['CLASS_LEFT_EMBEDDINGS'].split(',')
