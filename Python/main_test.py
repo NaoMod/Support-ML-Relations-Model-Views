@@ -344,15 +344,30 @@ with open(parameters_for_view) as json_data:
             roc_auc = area_curve(fpr, tpr)
             print("Area under the ROC curve : %f" % roc_auc)
 
-            from sklearn.metrics import confusion_matrix
-            threshold = 0.5  # Adjust threshold as needed
-            pred_labels = np.where(pred >= threshold, 1, 0)
-            confusion = confusion_matrix(ground_truth, pred_labels)
-            print("Confusion Matrix:")
-            print("                  Predicted Negative   Predicted Positive")
-            print("Actual Negative         TN                   FP")
-            print("Actual Positive         FN                   TP")
-            print(confusion)
+            # threshold = 0.5  # Adjust threshold as needed
+            # pred_labels = np.where(pred >= threshold, 1, 0)
+            # confusion = confusion_matrix(ground_truth, pred_labels)
+            # print("Confusion Matrix:")
+            # print("                  Predicted Negative   Predicted Positive")
+            # print("Actual Negative         TN                   FP")
+            # print("Actual Positive         FN                   TP")
+            # print(confusion)
+            thresholds = np.arange(0.1, 1.1, 0.1)  # Threshold values from 0.1 to 1.0
+            # pred_labels = np.where(pred >= thresholds[:, np.newaxis], 1, 0)
+            # confusion = confusion_matrix(ground_truth, pred_labels)
+
+            # print("Confusion Matrix:")
+            # print("                  Predicted Negative   Predicted Positive")
+            # print("Actual Negative         TN                   FP")
+            # print("Actual Positive         FN                   TP")
+            # print(confusion)
+
+            # Calculate FPR and TPR for each threshold
+            fpr, tpr, _ = roc_curve(ground_truth, pred)
+
+            print("Threshold\tFPR\t\tTPR")
+            for threshold, fpr_value, tpr_value in zip(thresholds, fpr, tpr):
+                print(f"{threshold:.1f}\t\t{fpr_value:.4f}\t\t{tpr_value:.4f}")
 
             ####################################
             # The optimal cut off would be where tpr is high and fpr is low

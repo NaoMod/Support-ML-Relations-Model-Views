@@ -344,6 +344,7 @@ with open(parameters_for_view) as json_data:
             fpr, tpr, roc_tr = roc_curve(ground_truth, torch.sigmoid(torch.from_numpy(pred)))
             print_roc_curve(fpr, tpr, relation_name + "_Validation", auc, True)
 
+
             # Metric 2 - Precision Recall
             no_skill = len(ground_truth[ground_truth==1]) / len(ground_truth)
             precision, recall, _ = precision_recall_curve(ground_truth, (torch.sigmoid(torch.from_numpy(pred))))
@@ -354,14 +355,30 @@ with open(parameters_for_view) as json_data:
             print("Area under the ROC curve : %f" % roc_auc)
 
             from sklearn.metrics import confusion_matrix
-            threshold = 0.5  # Adjust threshold as needed
-            pred_labels = np.where(pred >= threshold, 1, 0)
-            confusion = confusion_matrix(ground_truth, pred_labels)
-            print("Confusion Matrix:")
-            print("                  Predicted Negative   Predicted Positive")
-            print("Actual Negative         TN                   FP")
-            print("Actual Positive         FN                   TP")
-            print(confusion)
+            # threshold = 0.5  # Adjust threshold as needed
+            # pred_labels = np.where(pred >= threshold, 1, 0)
+            # confusion = confusion_matrix(ground_truth, pred_labels)
+            # print("Confusion Matrix:")
+            # print("                  Predicted Negative   Predicted Positive")
+            # print("Actual Negative         TN                   FP")
+            # print("Actual Positive         FN                   TP")
+            # print(confusion)
+            thresholds = np.arange(0.1, 1.1, 0.1)  # Threshold values from 0.1 to 1.0
+            # pred_labels = np.where(pred >= thresholds[:, np.newaxis], 1, 0)
+            # confusion = confusion_matrix(ground_truth, pred_labels)
+
+            # print("Confusion Matrix:")
+            # print("                  Predicted Negative   Predicted Positive")
+            # print("Actual Negative         TN                   FP")
+            # print("Actual Positive         FN                   TP")
+            # print(confusion)
+
+            # Calculate FPR and TPR for each threshold
+            fpr, tpr, _ = roc_curve(ground_truth, pred)
+
+            print("Threshold\tFPR\t\tTPR")
+            for threshold, fpr_value, tpr_value in zip(thresholds, fpr, tpr):
+                print(f"{threshold:.1f}\t\t{fpr_value:.4f}\t\t{tpr_value:.4f}")
 
             ####################################
             # The optimal cut off would be where tpr is high and fpr is low
@@ -375,6 +392,26 @@ with open(parameters_for_view) as json_data:
             #     '1-fpr' : pd.Series(1-fpr, index = i), 
             #     'tf' : pd.Series(tpr - fpr, index = i), 
             #     'thresholds' : pd.Series(roc_tr, index = i)})
+            
+            # print(roc)
+
+            # # Convert index to strings
+            # roc.index = roc.index.map(str)
+
+            # # Specify the desired range of columns
+            # thresholds_range = ['thresholds'] + [str(x) for x in np.arange(0, 1.1, 0.1)]
+
+            # # Round the threshold values to desired decimal places
+            # roc['thresholds_rounded'] = roc['thresholds'].round(decimals=1)
+
+            # # Check if rounded threshold values exist in the desired range
+            # not_found = [col for col in thresholds_range if col not in roc['thresholds_rounded'].astype(str)]
+
+            # if not_found:
+            #     for key in not_found:
+            #         print(f"Key '{key}' not found in DataFrame columns.")
+
+            # print(roc.loc[:, thresholds_range])
             
             # model = model.cpu()
             # model.eval() 
