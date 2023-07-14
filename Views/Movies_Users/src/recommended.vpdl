@@ -9,7 +9,7 @@
  from 'http://paper/movies' as Movies,
 	 'http://paper/users' as Users
 	  
- where 	"{User.id}<~>{Movies->genres.value}" 
+ where 	"{User.id}<~s.movies~>{Movies->genres.value}" 
  		for recommend
  		
  		
