@@ -1,0 +1,2 @@
+viewpoint=../src-gen/recommended.eviewpoint
+contributingModels=Users::../../Modeling_Resources/models/Example/MovieLens/UsersMovies.xmi,Movies::../../Modeling_Resources/models/Example/MovieLens/UsersMovies.xmi
