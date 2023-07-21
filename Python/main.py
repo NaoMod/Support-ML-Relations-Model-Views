@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from pyecore.resources import ResourceSet, URI
+from pyecore.resources import URI
 
 from torch_geometric.loader import LinkNeighborLoader
 import torch_geometric.transforms as T
@@ -16,7 +16,6 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import auc as area_curve
 
-
 from os import path as osp
 import glob
 import json
@@ -24,6 +23,7 @@ from pathlib import Path
 
 from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
+from modeling.metamodels import Metamodels
 
 VIEWS_DIRECTORY = 'Views'
 VIEW_NAME = 'Movies_Users'
@@ -56,30 +56,13 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         HIDDEN_CHANNELS = relation_props["ARCHITECTURE"]["HIDDEN_CHANNELS"]
         CLASSIFIER = relation_props["ARCHITECTURE"]["CLASSIFIER"]
 
-        # Register the metamodels in the resource set    
-        resource_set = ResourceSet()
-        modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..','Modeling_Resources'))[0]
+        # Register the metamodels in the resource set
+        metamodels = Metamodels()
+        metamodels.register()
 
-        #TODO: Include as parameters in training
-        ecore_path_left = glob.glob(osp.join(modeling_resources_path, 'metamodels/UserMovies.ecore'))[0]
-        ecore_path_right =glob.glob(osp.join(modeling_resources_path, 'metamodels/UserMovies.ecore'))[0]
+        modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..', 'Modeling_Resources'))[0]
+        resource_set = metamodels.get_resource_set()
 
-        resource_path = resource_set.get_resource(URI(ecore_path_left))
-        root_pkg = resource_path.contents[0]
-        
-        contents = root_pkg.eContents
-
-        resource_set.metamodel_registry[contents[0].nsURI] = contents[0]
-        resource_set.metamodel_registry[contents[1].nsURI] = contents[1]                
-            
-
-        # resource_left = resource_set.get_resource(URI(ecore_path_left))
-        # mm_root_left = resource_left.contents[0]
-        # resource_right = resource_set.get_resource(URI(ecore_path_right))
-        # mm_root_right = resource_right.contents[0]
-
-        # resource_set.metamodel_registry[mm_root_left.nsURI] = mm_root_left
-        # resource_set.metamodel_registry[mm_root_right.nsURI] = mm_root_right
 
         dataset_func = ToGraph(embeddings_information=relation_props["EMBEDDINGS"], features_for_embedding_left=None, features_for_embedding_right=None)
         # Register the models in the resource set
