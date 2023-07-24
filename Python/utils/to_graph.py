@@ -21,7 +21,7 @@ class ToGraph():
         Left_wrapper = {}
         Right_wrapper = {}
 
-        attributes_left_class = [s.split(".",1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
+        attributes_left_class = [s.split(".", 1)[1] for s in self.features_for_embedding_left if s.count(".") == 1]
         #TODO: To get attributes from other classes and implement navigation
         unique_id_left = None
         for element in model_root_left:
@@ -211,21 +211,35 @@ class ToGraph():
 
         return edge_index, edge_attr
     
-    # def get_attributtes(model_root, check_class_name, features_for_embedding, wrapper):
-    #     attributes_of_class = [s.split(".",1)[1] for s in features_for_embedding if s.count(".") == 1]
+    def get_attributtes(model_root, check_class_name, features_for_embedding, wrapper):
+        attributes_of_class = [s.split(".",1)[1] for s in features_for_embedding if s.count(".") == 1]
 
-    #     not_filtered_attributes = [s for s in features_for_embedding if s not in attributes_of_class]
-    #     for element in model_root:
-    #         className = element.eClass.name
-    #         if className == check_class_name:
-    #             for attribute in element.eClass.eAttributes:
-    #                 attributeName = attribute.name
-    #                 if  features_for_embedding is not None and attributeName in attributes_of_class:
-    #                     if attributeName not in wrapper:
-    #                         wrapper[attributeName] = []
-    #                     wrapper[attributeName].append(element.eGet(attribute))
+        # not_filtered_attributes = [s for s in features_for_embedding if s not in attributes_of_class]
+        # for element in model_root:
+        #     className = element.eClass.name
+        #     if className == check_class_name:
+        #         for attribute in element.eClass.eAttributes:
+        #             attributeName = attribute.name
+        #             if  features_for_embedding is not None and attributeName in attributes_of_class:
+        #                 if attributeName not in wrapper:
+        #                     wrapper[attributeName] = []
+        #                 wrapper[attributeName].append(element.eGet(attribute))
 
-    #             if len(not_filtered_attributes) > 0:
-    #                 # call the function again for the children
-    #                 get_attributtes(element, check_class_name, features_for_embedding, wrapper)
+        #         if len(not_filtered_attributes) > 0:
+        #             # call the function again for the children
+        #             get_attributtes(element, check_class_name, features_for_embedding, wrapper)
+
+        unique_id = None
+        for element in model_root:
+            className = element.eClass.name
+            if className == check_class_name:
+                for attribute in element.eClass.eAttributes:
+                    attributeName = attribute.name
+                    if attribute.unique and unique_id is None:
+                        # important to store the unique attribute to identify the element among all models
+                        unique_id = attribute.name
+                    if  features_for_embedding is not None and (attributeName in attributes_of_class or attributeName == unique_id):
+                        if attributeName not in wrapper:
+                            wrapper[attributeName] = []
+                        wrapper[attributeName].append(element.eGet(attribute))
         
