@@ -10,8 +10,8 @@ class ToGraph():
 
     def __init__(self, embeddings_information, features_for_embedding_left = None, features_for_embedding_right = None):
         
-        self.features_for_embedding_left = [feature for feature in embeddings_information if feature.startswith("User")]
-        self.features_for_embedding_right = [feature for feature in embeddings_information if feature.startswith("Movie")]
+        self.features_for_embedding_left = [feature for feature in embeddings_information if feature.startswith("s")]
+        self.features_for_embedding_right = [feature for feature in embeddings_information if feature.startswith("t")]
         self.embeddings_information = embeddings_information
 
 

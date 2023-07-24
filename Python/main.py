@@ -41,8 +41,8 @@ with open(gnn_parameters) as json_data_gnn_parameters:
     parameters = json.load(json_data_gnn_parameters)
 
     for relation_name, relation_props in parameters.items():
-        class_left = relation_props['CLASS_LEFT']
-        class_right = relation_props['CLASS_RIGHT']
+        s = relation_props['S']
+        t = relation_props['T']
         rev_relation_name = "rev_" + relation_name
 
         EPOCHS = relation_props["TRAINING_PARAMETERS"]["EPOCHS"]
@@ -80,14 +80,14 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         if relations_exist:
             relations_for_graph = relations_path[0]  
 
-        data, left_original_mapping, right_original_mapping = dataset_func.xmi_to_graph(model_root_left, model_root_right, relations_for_graph, class_left, class_right, relation_name)
+        data, left_original_mapping, right_original_mapping = dataset_func.xmi_to_graph(model_root_left, model_root_right, relations_for_graph, s, t, relation_name)
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         data = data.to(device)
 
-        # Add a reverse (class_right, rev_relation_name, class_left) relation for message passing:
+        # Add a reverse (t, rev_relation_name, s) relation for message passing:
         data = T.ToUndirected()(data)
-        del data[class_right, rev_relation_name, class_left].edge_label  # Remove "reverse" label.
+        del data[t, rev_relation_name, s].edge_label  # Remove "reverse" label.
 
         # Perform a link-level split into training, validation, and test edges:
         train_data, val_data, test_data = T.RandomLinkSplit(
@@ -96,19 +96,19 @@ with open(gnn_parameters) as json_data_gnn_parameters:
             disjoint_train_ratio=0.4, # use 60% for message passing and 40% for supervision
             neg_sampling_ratio=2.0, # generate 2:1 negative edges
             add_negative_train_samples=ADD_NEGATIVE_TRAINING,
-            edge_types=(class_left, relation_name, class_right),
-            rev_edge_types=(class_right, rev_relation_name, class_left)
+            edge_types=(s, relation_name, t),
+            rev_edge_types=(t, rev_relation_name, s)
         )(data)
 
-        train_edge_label_index = train_data[class_left, relation_name, class_right].edge_label_index
-        train_edge_label = train_data[class_left, relation_name, class_right].edge_label
+        train_edge_label_index = train_data[s, relation_name, t].edge_label_index
+        train_edge_label = train_data[s, relation_name, t].edge_label
 
         # LOADERS
         train_loader = LinkNeighborLoader(
             data=train_data,
             num_neighbors=[20, 10],
             neg_sampling_ratio=2.0,
-            edge_label_index=((class_left, relation_name, class_right), train_edge_label_index),
+            edge_label_index=((s, relation_name, t), train_edge_label_index),
             edge_label=train_edge_label,
             batch_size=128,
             shuffle=True,
@@ -197,12 +197,12 @@ with open(gnn_parameters) as json_data_gnn_parameters:
                 super().__init__()
                 # When the dataset does not come with rich features, we also learn two
                 # embedding matrices for Left and Right:
-                if hasattr(data[class_left], 'x') and data[class_left].x != None:
-                    self.left_lin = torch.nn.Linear(data[class_left].num_features, hidden_channels)
-                if hasattr(data[class_right], 'x') and data[class_right].x != None:
-                    self.right_lin = torch.nn.Linear(data[class_right].num_features, hidden_channels)
-                self.left_emb = torch.nn.Embedding(data[class_left].num_nodes, hidden_channels)
-                self.right_emb = torch.nn.Embedding(data[class_right].num_nodes, hidden_channels)
+                if hasattr(data[s], 'x') and data[s].x != None:
+                    self.left_lin = torch.nn.Linear(data[s].num_features, hidden_channels)
+                if hasattr(data[t], 'x') and data[t].x != None:
+                    self.right_lin = torch.nn.Linear(data[t].num_features, hidden_channels)
+                self.left_emb = torch.nn.Embedding(data[s].num_nodes, hidden_channels)
+                self.right_emb = torch.nn.Embedding(data[t].num_nodes, hidden_channels)
 
                 # Instantiate homogeneous GNN:
                 self.gnn = GNN(hidden_channels)
@@ -228,39 +228,39 @@ with open(gnn_parameters) as json_data_gnn_parameters:
                 
                 # if not hasattr(self.__class__, 'left_lin') or not callable(getattr(self.__class__, 'left_lin')):
                 #     x_dict = {
-                #         class_left: self.left_emb(data[class_left].node_id),
-                #         class_right: self.right_lin(data[class_right].x) + self.right_emb(data[class_right].node_id),
+                #         s: self.left_emb(data[s].node_id),
+                #         t: self.right_lin(data[t].x) + self.right_emb(data[t].node_id),
                 #     }
                 # elif not hasattr(self.__class__, 'right_lin') or not callable(getattr(self.__class__, 'right_lin')):
                 #     x_dict = {
-                #         class_left: self.left_lin(data[class_left].x) + self.left_emb(data[class_left].node_id),
-                #         class_right: self.right_emb(data[class_right].node_id),
+                #         s: self.left_lin(data[s].x) + self.left_emb(data[s].node_id),
+                #         t: self.right_emb(data[t].node_id),
                 #     }
                 # else:
                 #     x_dict = {
-                #         class_left: self.left_lin(data[class_left].x) + self.left_emb(data[class_left].node_id),
-                #         class_right: self.right_lin(data[class_right].x) + self.right_emb(data[class_right].node_id),
+                #         s: self.left_lin(data[s].x) + self.left_emb(data[s].node_id),
+                #         t: self.right_lin(data[t].x) + self.right_emb(data[t].node_id),
                 #     }
                 
                 x_dict = {}
 
                 if hasattr(self.__class__, 'left_lin') and callable(getattr(self.__class__, 'left_lin')):
-                    x_dict[class_left] = self.left_lin(data[class_left].x) + self.left_emb(data[class_left].node_id)
+                    x_dict[s] = self.left_lin(data[s].x) + self.left_emb(data[s].node_id)
                 else:
-                    x_dict[class_left] = self.left_emb(data[class_left].node_id)
+                    x_dict[s] = self.left_emb(data[s].node_id)
 
                 if hasattr(self.__class__, 'right_lin') and callable(getattr(self.__class__, 'right_lin')):
-                    x_dict[class_right] = self.right_lin(data[class_right].x) + self.right_emb(data[class_right].node_id)
+                    x_dict[t] = self.right_lin(data[t].x) + self.right_emb(data[t].node_id)
                 else:
-                    x_dict[class_right] = self.right_emb(data[class_right].node_id)
+                    x_dict[t] = self.right_emb(data[t].node_id)
                 
                 # `x_dict` holds feature matrices of all node types
                 # `edge_index_dict` holds all edge indices of all edge types
                 x_dict = self.gnn(x_dict, data.edge_index_dict)
                 pred = self.classifier(
-                    x_dict[class_left],
-                    x_dict[class_right],
-                    data[class_left, relation_name, class_right].edge_label_index,
+                    x_dict[s],
+                    x_dict[t],
+                    data[s, relation_name, t].edge_label_index,
                 )
                 return pred
             
@@ -277,7 +277,7 @@ with open(gnn_parameters) as json_data_gnn_parameters:
                 sampled_data.to(device)
                 pred = model(sampled_data)
 
-                ground_truth = sampled_data[class_left, relation_name, class_right].edge_label
+                ground_truth = sampled_data[s, relation_name, t].edge_label
                 loss = F.binary_cross_entropy_with_logits(pred, ground_truth)
 
                 loss.backward()
@@ -288,17 +288,17 @@ with open(gnn_parameters) as json_data_gnn_parameters:
                 print(f"Epoch: {epoch:03d}, Loss: {total_loss / total_examples:.4f}")
 
         # Define the validation seed edges:
-        edge_label_index = val_data[class_left, relation_name, class_right].edge_label_index
-        edge_label = val_data[class_left, relation_name, class_right].edge_label
+        edge_label_index = val_data[s, relation_name, t].edge_label_index
+        edge_label = val_data[s, relation_name, t].edge_label
 
         val_loader = LinkNeighborLoader(
             data=val_data,
             num_neighbors=[20, 10],
             edge_label_index=(
-                (class_left, relation_name, class_right), 
-                val_data[(class_left, relation_name, class_right)].edge_label_index,
+                (s, relation_name, t), 
+                val_data[(s, relation_name, t)].edge_label_index,
             ),
-            edge_label=val_data[(class_left, relation_name, class_right)].edge_label,
+            edge_label=val_data[(s, relation_name, t)].edge_label,
             batch_size=3 * 128,
             shuffle=False,
         )
@@ -309,7 +309,7 @@ with open(gnn_parameters) as json_data_gnn_parameters:
             with torch.no_grad():
                 sampled_data.to(device)
                 preds.append(model(sampled_data))
-                ground_truths.append(sampled_data[class_left, relation_name, class_right].edge_label)
+                ground_truths.append(sampled_data[s, relation_name, t].edge_label)
 
         pred = torch.cat(preds, dim=0).cpu().numpy()
         ground_truth = torch.cat(ground_truths, dim=0).cpu().numpy()
@@ -393,8 +393,8 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         # model = model.cpu()
         # model.eval() 
 
-        # total_class_left = len(left_original_mapping) 
-        # total_class_right = len(right_original_mapping)
+        # total_s = len(left_original_mapping) 
+        # total_t = len(right_original_mapping)
 
         # threshold = roc.iloc[(roc.tf-0).abs().argsort()[:1]]['thresholds']
         # predictions = {}
@@ -402,10 +402,10 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         # for uri_idenifier_left, left_id in tqdm.tqdm(left_original_mapping.items()):
         #     predictions[uri_idenifier_left] = []
 
-        #     left_row = torch.tensor([left_id] * total_class_right) 
-        #     all_right_ids = torch.arange(total_class_right) 
+        #     left_row = torch.tensor([left_id] * total_t) 
+        #     all_right_ids = torch.arange(total_t) 
         #     edge_label_index = torch.stack([left_row, all_right_ids], dim=0) 
-        #     data[class_left, relation_name, class_right].edge_label_index = edge_label_index
+        #     data[s, relation_name, t].edge_label_index = edge_label_index
             
         #     with torch.no_grad(): 
         #         pred = model(data)
