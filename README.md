@@ -1,24 +1,34 @@
-# Paper Title
+## Integrated Support for Machine Learning of Inter-Model Relations in Model Views
 
-Repository containing all artifacts for the paper "Title" submitted to " ". The repository includes all necessary files to execute the tool for recommended Model Views and the code for evaluation.
+Repository containing all artifacts for the paper "Integrated Support for Machine Learning of Inter-Model Relations in Model Views" submitted to "ACM SIGPLAN International Conference on Software Language Engineering (SLE 16th)".
 
-## Getting started
+The repository is the artifact companion for the paper and it includes all necessary intructions to execute the tool.
 
-The final part of this README file contains a tree view of the repo organization. Each main directory includes a detailed extra README inside it with detailed info. Below is the basic flow to use the tool and run the evaluation steps.
+### Enviroment preparation ⚙️
 
-## Use the tool
+How to prepare the enviroment to execute the tool.
+
+#### Requirements
+
+- It is necessary to have a working instance of Eclipse Modeling Workbench with the [EMF Views](https://github.com/atlanmod/emfviews/tree/AIDOaRt_new_vpdl) plugin installed (branch `AIDOaRt_new_vpdl`).
+    - TODO: Include link for a update site with the correct branch for EMF Views
+- Python >= 3.8 (refer to the `Python` directory for detailed instructions on how to setup the virtual enviroment)
+
+#### Projects
+
+- The directories `Java`, `Modeling_Resources` and `Views` are all Eclipse configured projects that can be imported to a running Eclipse instance. They include 9 Eclipse projects.
+- The `Python` directory includes the Python files necessary to execute the "View Learning" component of the solution. We recommend to run them using a VS Code instance.
+
+### Use the tool 🚀
 
 The tool aims to automatically recommend links in Model Views by training a GNN architecture with previously known links between Heterogeneous EMF models.
 
-### Requirements
+#### Generating the files for the tests
 
-- It is necessary to have a working instance of Eclipse Modeling Workbench with the EMF Views plugin installed.
-- Python >= 3.8 (refer to the ML directory for detailed instructions)
-
-### How to generate the necessary files for execution
-
-1. Using the Eclipse instance, run the Java Program `GenerateExample` in the `org.atlanmod.erpaper.modeling` project to get the example files used in the steps decribed below
-    - Into `Modeling_Resources/models`, the program will create 2 .xmi files with the serialized models and a CSV with the defined relations.
+1. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `UserMoviesExample` to generate the example for the Users/Movies use case described in the section 2.3 of the paper.
+    - This will download the data from [MovieLens](https://grouplens.org/datasets/movielens/) dataset and generate the models into `Modeling_Resources/models`.
+    - To check the models in the browser, it maybe necessary to register the metamodels into package registry. To do so, check the Ecore mmetamodels into `Modeling_Resources/metamodels`.
+2. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `UserMoviesExample` to generate the example for the Users/Movies use case described in the section 2.3 of the paper.
  
 ### How to execute step-by-step
 

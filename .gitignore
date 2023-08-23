@@ -267,9 +267,9 @@ replay_pid*
 #Figures
 **/figures
 
-/Comparison/**
-!/Comparison/**/
-!/Comparison/**/.gitkeep
+/movielens/**
+!/movielens/**/
+!/movielens/**/.gitkeep
 
 github_token.txt
 *.png

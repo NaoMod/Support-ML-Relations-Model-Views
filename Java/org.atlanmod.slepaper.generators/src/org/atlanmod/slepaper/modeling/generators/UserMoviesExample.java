@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.atlanmod.slepaper.modeling.generators.helpers.DownloadAndExtractCSV;
 import org.atlanmod.slepaper.modeling.generators.helpers.RandomGen;
 import org.atlanmod.slepaper.modeling.generators.helpers.UserMovies;
 import org.eclipse.emf.common.util.URI;
@@ -57,7 +58,7 @@ public class UserMoviesExample {
 		uriModel = resourceURI("/../../Modeling_Resources/models/Example/" + directory + "/UsersMovies.xmi");
 		model = rSet.createResource(uriModel);
 
-		String pathToCsvMovies = here + "/ml-latest-small/movies.csv";
+		String pathToCsvMovies = DownloadAndExtractCSV.execute() + "/ml-latest-small/movies.csv";
 		BufferedReader csvReaderMovie = new BufferedReader(new FileReader(pathToCsvMovies));
 		
 		Map<String, Integer> uniqueGenres = new HashMap<String, Integer>();
@@ -100,7 +101,7 @@ public class UserMoviesExample {
 			}
 		}
 
-		String pathToCsvUsers = here + "/ml-latest-small/ratings.csv";
+		String pathToCsvUsers = DownloadAndExtractCSV.execute() + "/ml-latest-small/ratings.csv";
 		BufferedReader csvReaderUser = new BufferedReader(new FileReader(pathToCsvUsers));
 
 		CSVParser parserUsers = CSVParser.parse(csvReaderUser, CSVFormat.RFC4180);
