@@ -28,11 +28,17 @@ The tool aims to automatically recommend links in Model Views by training a GNN 
 1. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `UserMoviesExample` to generate the example for the Users/Movies use case described in the section 2.3 of the paper.
     - This will download the data from [MovieLens](https://grouplens.org/datasets/movielens/) dataset and generate the models into `Modeling_Resources/models`.
     - To check the models in the browser, it maybe necessary to register the metamodels into package registry. To do so, check the Ecore mmetamodels into `Modeling_Resources/metamodels`.
-2. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `UserMoviesExample` to generate the example for the Users/Movies use case described in the section 2.3 of the paper.
- 
-### How to execute step-by-step
+2. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `ABExample` to generate the example for the AB use case used in the evaluation section of the paper (Section 5).
 
-1. Create the VPDL file defining the metamodels, but without the where clause
+With this generated files, it's possible to use the tool to replicate the results of the paper, as to use recommendations to any other view.
+ 
+#### Executing the examples step-by-step
+
+All views are stored as Xtext projects into the directory called `Views`.
+
+*Executing the Users/Movies example*
+
+1. Open the VPDL file defining the metamodels, but without the where clause
     - Important to point out the classes that participate in the relation and the relation name
     - This will generate the .eviewpoint file and the viewpoint WeavingModel (.xmi)
     - E.g. The `src` and `src-gen` directories into `Recommended_View` project.
