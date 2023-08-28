@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.FileUtils;
 import org.atlanmod.slepaper.modeling.generators.helpers.DownloadAndExtractCSV;
 import org.atlanmod.slepaper.modeling.generators.helpers.RandomGen;
 import org.atlanmod.slepaper.modeling.generators.helpers.UserMovies;
@@ -40,7 +41,7 @@ public class UserMoviesExample {
 	 * 
 	 * @param directory Name of the directory where the serialized models will be
 	 *                  stored as xmi files
-	 * @param strings   Set of strings to be used as user names (the dataset does
+	 * @param strings   Set of strings to be used as user names (the original dataset does
 	 *                  not contain any info about users)
 	 * 
 	 * @throws IOException
@@ -55,12 +56,14 @@ public class UserMoviesExample {
 
 		Iterator<String> itNames = names.iterator();
 
-		uriModel = resourceURI("/../../Modeling_Resources/models/Example/" + directory + "/UsersMovies.xmi");
+		uriModel = resourceURI("/../../Modeling_Resources/models/Generated/" + directory + "/UsersMovies.xmi");
 		model = rSet.createResource(uriModel);
-
-		String pathToCsvMovies = DownloadAndExtractCSV.execute() + "/ml-latest-small/movies.csv";
-		BufferedReader csvReaderMovie = new BufferedReader(new FileReader(pathToCsvMovies));
 		
+		String pathToMovieLens = DownloadAndExtractCSV.execute();
+
+		String pathToCsvMovies = pathToMovieLens + "/ml-latest-small/movies.csv";
+		BufferedReader csvReaderMovie = new BufferedReader(new FileReader(pathToCsvMovies));
+
 		Map<String, Integer> uniqueGenres = new HashMap<String, Integer>();
 
 		CSVParser parser = CSVParser.parse(csvReaderMovie, CSVFormat.RFC4180);
@@ -71,37 +74,36 @@ public class UserMoviesExample {
 				String genres = csvRecord.get(2);
 
 				EObject objectMovie = UserMovies.createObjectTypeMovie("http://paper/movies", movieID, title, genres);
-				
+
 				model.getContents().add(objectMovie);
-				
-				String [] genresSplit = genres.split("\\|");
+
+				String[] genresSplit = genres.split("\\|");
 				for (String genre : genresSplit) {
-					
+
 					EObject objectGenre;
 					if (!uniqueGenres.containsKey(genre)) {
-						
+
 						Integer id = RandomGen.generateID();
-	
+
 						objectGenre = UserMovies.createObjectTypeGenre("http://paper/movies", id, genre);
-		
+
 						model.getContents().add(objectGenre);
 						uniqueGenres.put(genre, id);
 					} else {
 						Integer id = uniqueGenres.get(genre);
 						objectGenre = UserMovies.findObjectType(model, "Genre", id);
 					}
-					
-					//create the rate relation
+
+					// create the rate relation
 					UserMovies.createGenreRelation(objectMovie, objectGenre);
 				}
 
-				
 			} catch (NumberFormatException e) {
 				continue;
 			}
 		}
 
-		String pathToCsvUsers = DownloadAndExtractCSV.execute() + "/ml-latest-small/ratings.csv";
+		String pathToCsvUsers = pathToMovieLens + "/ml-latest-small/ratings.csv";
 		BufferedReader csvReaderUser = new BufferedReader(new FileReader(pathToCsvUsers));
 
 		CSVParser parserUsers = CSVParser.parse(csvReaderUser, CSVFormat.RFC4180);
@@ -113,16 +115,16 @@ public class UserMoviesExample {
 				EObject objectUser;
 				if (!uniqueUsers.contains(userID)) {
 					String name = itNames.next();
-	
+
 					objectUser = UserMovies.createObjectTypeUser("http://paper/users", userID, name);
-	
+
 					model.getContents().add(objectUser);
 					uniqueUsers.add(userID);
 				} else {
 					objectUser = UserMovies.findObjectType(model, "User", userID);
 				}
 				EObject objectMovie = UserMovies.findObjectType(model, "Movie", movieID);
-				//create the movies relation
+				// create the movies relation
 				UserMovies.createRelation(objectUser, objectMovie);
 			} catch (NumberFormatException e) {
 				continue;
@@ -132,6 +134,18 @@ public class UserMoviesExample {
 		// serialize
 		try {
 			model.save(null);
+			System.out.println("UserMovies models was generated successfully.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//copy the relations CSV from movielens to models directory
+		try {
+			FileUtils.copyFile(
+					new File(pathToMovieLens + "/ml-latest-small/ratings.csv"), 
+					new File("/../../Modeling_Resources/models/Generated/" + directory + "/Relations.csv")
+				);
+			System.out.println("UserMovies relations file was extracted successfully.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -150,23 +164,22 @@ public class UserMoviesExample {
 
 		// Create EMF Resources and register metamodels used in the example
 		ResourceSet rs = new ResourceSetImpl();
-		
 
 		EPackage UserMoviesPkg = (EPackage) rs
 				.getResource(resourceURI("/../../Modeling_Resources/metamodels/UserMovies.ecore"), true).getContents()
 				.get(0);
 		EPackage.Registry.INSTANCE.put(UserMoviesPkg.getNsURI(), UserMoviesPkg);
-		
-		//register inner packages
+
+		// register inner packages
 		List<EObject> contents = UserMoviesPkg.eContents();
 
 		// Iterate through the contents to find the packages
 		for (EObject content : contents) {
-		  if (content instanceof EPackage) {
-		    EPackage pkg = (EPackage) content;
-		    
-		    EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
-		  }
+			if (content instanceof EPackage) {
+				EPackage pkg = (EPackage) content;
+
+				EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
+			}
 		}
 
 		// Create Sets of strings to be used as user names in the generated models

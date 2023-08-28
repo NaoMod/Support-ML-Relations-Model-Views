@@ -19,8 +19,8 @@ public class DownloadAndExtractCSV {
 	 */
 	public static String execute() {
 		String urlStr = "https://files.grouplens.org/datasets/movielens/ml-latest-small.zip";
-		String downloadPath = here + "/ml-latest-small/data.zip";
-		String extractFolder = here + "/ml-latest-small/";
+		String downloadPath = here + "/movielens/data.zip";
+		String extractFolder = here + "/movielens/";
 
 		try {
 			// Download the ZIP file

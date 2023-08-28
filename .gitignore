@@ -267,10 +267,20 @@ replay_pid*
 #Figures
 **/figures
 
-/movielens/**
-!/movielens/**/
-!/movielens/**/.gitkeep
+#movielens data
+**/movielens/**
+!**/movielens/**/.gitkeep
 
+#generated models
+**/models/Example/**
+!**/models/Example/**/
+!**/models/**/.gitkeep
+
+**/models/Generated/**
+!**/models/Generated/**/
+!**/models/**/.gitkeep
+
+#extra output data
 github_token.txt
 *.png
 *.pdf

@@ -30,11 +30,13 @@ The tool aims to automatically recommend links in Model Views by training a GNN 
     - To check the models in the browser, it maybe necessary to register the metamodels into package registry. To do so, check the Ecore mmetamodels into `Modeling_Resources/metamodels`.
 2. Into the Java project `org.atlanmod.slepaper.modeling.generators`, run the Java program `ABExample` to generate the example for the AB use case used in the evaluation section of the paper (Section 5).
 
+All example files will be stored in the `Modeling_Resources` project under the `models/Generated` directory.
+
 With this generated files, it's possible to use the tool to replicate the results of the paper, as to use recommendations to any other view.
  
 #### Executing the examples step-by-step
 
-All views are stored as Xtext projects into the directory called `Views`.
+All example views are stored as Xtext projects into the directory called `Views`.
 
 *Executing the Users/Movies example*
 
