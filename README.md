@@ -1,6 +1,8 @@
-## Integrated Support for Machine Learning of Inter-Model Relations in Model Views
+## Integrating the Support for Machine Learning of Inter-Model Relations in Model Views
 
-Repository containing all artifacts for the paper "Integrated Support for Machine Learning of Inter-Model Relations in Model Views" submitted to "ACM SIGPLAN International Conference on Software Language Engineering (SLE 16th)".
+**PRIVATE REPOSITORY. AVAILABLE JUST ANONYMOUSLY**
+
+Repository containing all artifacts for the paper "Integrating the Support for Machine Learning of Inter-Model Relations in Model Views" submitted to "The 39th ACM/SIGAPP Symposium on Applied Computing (ACM SAC 2024)" at the Software Engineering Track.
 
 The repository is the artifact companion for the paper and it includes all necessary intructions to execute the tool.
 
