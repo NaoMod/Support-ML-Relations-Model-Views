@@ -153,6 +153,7 @@ with open(gnn_parameters) as json_data_gnn_parameters:
 
                 # Apply dot-product to get a prediction per supervision edge:
                 return (edge_feat_left * edge_feat_right).sum(dim=-1)
+        
         class GNN(torch.nn.Module):
             """
             This class is responsible for creating the ML model
@@ -341,7 +342,7 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         # print("Actual Negative         TN                   FP")
         # print("Actual Positive         FN                   TP")
         # print(confusion)
-        thresholds = np.arange(0.1, 1.1, 0.1)  # Threshold values from 0.1 to 1.0
+        #thresholds = np.arange(0.1, 1.1, 0.1)  # Threshold values from 0.1 to 1.0
         # pred_labels = np.where(pred >= thresholds[:, np.newaxis], 1, 0)
         # confusion = confusion_matrix(ground_truth, pred_labels)
 
@@ -352,7 +353,7 @@ with open(gnn_parameters) as json_data_gnn_parameters:
         # print(confusion)
 
         # Calculate FPR and TPR for each threshold
-        fpr, tpr, _ = roc_curve(ground_truth, pred)
+        fpr, tpr, thresholds = roc_curve(ground_truth, pred)
 
         print("Threshold\tFPR\t\tTPR")
         for threshold, fpr_value, tpr_value in zip(thresholds, fpr, tpr):
