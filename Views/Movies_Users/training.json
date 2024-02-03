@@ -1,28 +1,27 @@
 {
-    "recommend": {
-        "S": "User",
-        "T": "Movie",
+    "watched": {
         "ARCHITECTURE": {
-            "HIDDEN_CHANNELS": "64",
-            "ACTIVATION": "relu",
-            "CLASSIFIER": "dot_product",
             "OPERATOR": "SAGEConv",
-            "CONVOLUTIONS": "2"
+            "CONVOLUTIONS": 2,
+            "ACTIVATION": "relu",
+            "HIDDEN_CHANNELS": 64,
+            "CLASSIFIER": "dot_product"
         },
         "TRAINING_PARAMETERS": {
-            "EPOCHS": "2",
-            "ADD_NEGATIVE_TRAINING": "false",
-            "LINK_PATH": "models/Example/MovieLens/Relations.csv",
-            "NEG_SAMPLING_RATIO": "2.0",
-            "SOURCE_MODEL_PATH": "models/Example/MovieLens/UsersMovies.xmi",
-            "TARGET_MODEL_PATH": "models/Example/MovieLens/UsersMovies.xmi",
-            "TRAINING_SPLIT": "0.1",
-            "VALIDATION_SPLIT": "0.1",
-            "LEARNING_RATE": "0.001"
+            "EPOCHS": 2,
+            "LEARNING_RATE": 0.001,
+            "ADD_NEGATIVE_TRAINING": false,
+            "NEG_SAMPLING_RATIO": 2.0,
+            "TRAINING_SPLIT": 0.1,
+            "VALIDATION_SPLIT": 0.1,
+            "SOURCE_MODEL_PATH": "models/Example/MovieLens_old/Users.xmi",
+            "TARGET_MODEL_PATH": "models/Example/MovieLens_old/Movies.xmi",
+            "LINK_PATH": "models/Example/MovieLens_old/Relations.csv"
         },
         "EMBEDDINGS": {
-            "t.genres.value": "enum",
-            "s.id": "id"
+            "s.id": "id",
+            "t.id": "id",
+            "t.genres.value": "enum"
         }
     }
 }
