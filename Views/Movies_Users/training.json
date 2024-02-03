@@ -14,9 +14,8 @@
             "NEG_SAMPLING_RATIO": 2.0,
             "TRAINING_SPLIT": 0.1,
             "VALIDATION_SPLIT": 0.1,
-            "SOURCE_MODEL_PATH": "models/Example/MovieLens_old/Users.xmi",
-            "TARGET_MODEL_PATH": "models/Example/MovieLens_old/Movies.xmi",
-            "LINK_PATH": "models/Example/MovieLens_old/Relations.csv"
+            "SOURCE_MODEL_PATH": "models/Generated/MovieLens/UsersMovies.xmi",
+            "TARGET_MODEL_PATH": "models/Generated/MovieLens/UsersMovies.xmi"
         },
         "EMBEDDINGS": {
             "s.id": "id",

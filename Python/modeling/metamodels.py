@@ -6,13 +6,33 @@ from pathlib import Path
 class Metamodels():
     
     def __init__(self):
-        """_summary_
+        """Initialize the Metamodels class.
+
+        This method initializes the Metamodels class by creating a ResourceSet
+        and setting the modeling_resources_path attribute.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
         """
         self.resource_set = ResourceSet()
         self.modeling_resources_path = glob.glob(osp.join(Path(__file__).parent, '..','..','Modeling_Resources'))[0]
 
     def register(self):
-        """_summary_
+        """Register the metamodels in the resource set.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        FileNotFoundError
+            If the metamodels directory is not found.
         """
         directory = osp.join(self.modeling_resources_path, 'metamodels')
         files = listdir(directory)
@@ -34,11 +54,11 @@ class Metamodels():
                     self.resource_set.metamodel_registry[content.nsURI] = content
 
     def get_resource_set(self):
-        """_summary_
+        """Return the resource set.
 
         Returns
         -------
-        _type_
-            _description_
+        ResourceSet
+            The resource set object.
         """
         return self.resource_set

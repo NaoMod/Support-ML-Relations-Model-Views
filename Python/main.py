@@ -18,7 +18,7 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import auc as area_curve
 
 # interbal libraries
-from utils.files import read_file
+from utils.files import read_file, get_path_name
 from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
 from modeling.metamodels import Metamodels
@@ -41,7 +41,7 @@ except FileNotFoundError as e:
     print("JSON parameters file not found at the specified path. Check VIEW_NAME constant and try again.")
     exit()
 
-parameters = json.loads(gnn_parameters)
+parameters = json.load(gnn_parameters)
 
 for relation_name, relation_props in parameters.items():
     rev_relation_name = "rev_" + relation_name
@@ -66,15 +66,15 @@ for relation_name, relation_props in parameters.items():
 
     dataset_func = ToGraph(embeddings_information=relation_props["EMBEDDINGS"], features_for_embedding_left=None, features_for_embedding_right=None)
     # Register the models in the resource set
-    xmi_path_left = read_file('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["SOURCE_MODEL_PATH"])
+    xmi_path_left = get_path_name('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["SOURCE_MODEL_PATH"])
     m_resource_left = resource_set.get_resource(URI(xmi_path_left))
     model_root_left = m_resource_left.contents
 
-    xmi_path_right = read_file('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["TARGET_MODEL_PATH"])
+    xmi_path_right = get_path_name('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["TARGET_MODEL_PATH"])
     m_resource_right = resource_set.get_resource(URI(xmi_path_right))
     model_root_right = m_resource_right.contents
 
-    relations_path = read_file('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["LINK_PATH"])
+    relations_path = get_path_name('..', 'Modeling_Resources', relation_props["TRAINING_PARAMETERS"]["LINK_PATH"])
     relations_exist = len(relations_path) != 0
     relations_for_graph = None
     if relations_exist:
