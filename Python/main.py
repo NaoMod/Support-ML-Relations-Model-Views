@@ -23,13 +23,15 @@ from utils.print_curves import print_pr_curve, print_roc_curve
 from utils.to_graph import ToGraph
 from modeling.metamodels import Metamodels
 
+import sys
+
 '''
 These two constants are used to define the name of the Views directory and also the name of the View for what the GNN will be trained.
 The examples in the paper that are accepted by the constant "VIEW_NAME" are "Movie_Users", "ViewAB1", "ViewAB2", "ViewAB3"
 This should be the only constants that need to be changed to run the GNN for a different View.
 '''
 VIEWS_DIRECTORY = '../Views'
-VIEW_NAME = 'Movies_Users'
+VIEW_NAME = sys.argv[1]
 
 # Read JSON files to get GNN properties
 gnn_parameters = None
